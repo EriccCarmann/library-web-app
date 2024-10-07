@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Library.Infrastructure.Repositories;
+using LibraryWebApi;
+using IdentityServer4.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllers();
 
@@ -72,11 +73,16 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 12;
 })
-    .AddEntityFrameworkStores<ApplicationDBContext>();
-    //.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDBContext>()
+    .AddDefaultTokenProviders();
 
-/*builder.Services.AddIdentityServer()
-    .AddAspNetIdentity<LibraryUser>();*/
+builder.Services.AddIdentityServer()
+    .AddInMemoryApiResources(Configuration.ApiResources)
+    .AddInMemoryIdentityResources(Configuration.IdentityResources)
+    .AddInMemoryApiScopes(Configuration.ApiScopes)
+    .AddInMemoryClients(Configuration.Clients)
+    .AddDeveloperSigningCredential()
+    .AddAspNetIdentity<LibraryUser>();
 
 /*////////////////////////don't
 builder.Services.AddAuthentication(options =>{
@@ -114,6 +120,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseIdentityServer();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

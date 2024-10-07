@@ -13,13 +13,12 @@ namespace Library.Infrastructure.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<LibraryUser> _userManager;
-        private readonly SignInManager<LibraryUser> signInManager;
-       // private readonly ITokenService _tokenService;
+        private readonly SignInManager<LibraryUser> _signInManager;
         
-        public AccountController(UserManager<LibraryUser> userManager)//, ITokenService tokenService
+        public AccountController(UserManager<LibraryUser> userManager, SignInManager<LibraryUser> signInManager)
         {
             _userManager = userManager;
-            //_tokenService = tokenService;
+            _signInManager = signInManager;
         }
 
         [HttpPost("register")]
@@ -47,14 +46,6 @@ namespace Library.Infrastructure.Controllers
                     if (roleResult.Succeeded)
                     {
                         return Ok(libraryUser);
-                      /*  return Ok(
-                            new NewUserDto 
-                            { 
-                                UserName = libraryUser.UserName,
-                                Email = libraryUser.Email,
-                                Token = _tokenService.CreateToken(libraryUser)
-                            }
-                            ); */
                     }
                     else
                     {

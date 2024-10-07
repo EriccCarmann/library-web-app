@@ -22,6 +22,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> GetAll()
         {
             var books = await _bookRepository.GetAllAsync();

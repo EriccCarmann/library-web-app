@@ -45,6 +45,6 @@ namespace Library.Infrastructure.Persistence
 
         public DbSet<Book> Book { get; set; }
         public DbSet<Author> Author { get; set; }
-        public DbSet<AuthorBook> authorBooks { get; set; }
+        public DbSet<AuthorBook> AuthorBook { get; set; }
     }
 }

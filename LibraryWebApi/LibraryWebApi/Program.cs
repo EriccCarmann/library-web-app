@@ -13,13 +13,14 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using IdentityServer4.AspNetIdentity;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => 
+builder.Services.AddSwaggerGen(/*options => 
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -61,25 +62,12 @@ builder.Services.AddSwaggerGen(options =>
                         new List<string>()
                     }
                 });
-});
-
-builder.Services.AddAuthentication(options => {
-    options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-})
-    .AddIdentityServerAuthentication(options => 
-    {
-        options.ApiName = "LibraryWebApi";
-        options.Authority = "https://localhost:5233";
-        options.RequireHttpsMetadata = false;
-});
-
-builder.Services.AddAuthorization();
+}*/);
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddDbContext<ApplicationDBContext>(options => {
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
@@ -94,20 +82,29 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "Library.Identity.Cookie";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 builder.Services.AddIdentityServer()
     .AddAspNetIdentity<LibraryUser>()
     .AddInMemoryApiResources(Configuration.GetApiResources())
     .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
-    .AddInMemoryClients(Configuration.Clients)
+    .AddInMemoryClients(Configuration.GetClients())
     .AddInMemoryApiScopes(Configuration.GetApiScopes())
     .AddDeveloperSigningCredential();
 
-/*builder.Services.ConfigureApplicationCookie(config =>
+builder.Services.AddAuthorization(opt =>
 {
-    config.Cookie.Name = "Notes.Identity.Cookie";
-    config.LoginPath = "/Auth/Login";
-    config.LogoutPath = "/Auth/Logout";
-});*/
+    opt.AddPolicy("User", builder =>
+    {
+        builder.RequireClaim(ClaimTypes.Role, "User");
+    });
+});
+
+builder.Services.AddAuthentication();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -119,18 +116,21 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.UseSwaggerUI(/*options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger UI Demo");
         options.OAuthClientId("client_id_swagger");
         options.DocExpansion(DocExpansion.List);
         options.OAuthScopeSeparator(" ");
         options.OAuthClientSecret("client_secret_swagger");
-    });
+    }*/);
 }
 
 app.UseRouting();
+
 app.UseIdentityServer();
+app.UseCookiePolicy();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

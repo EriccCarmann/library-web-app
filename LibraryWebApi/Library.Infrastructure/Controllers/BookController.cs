@@ -26,7 +26,7 @@ namespace Library.Infrastructure.Controllers
         public async Task<ActionResult> GetAll()
         {
             var books = await _bookRepository.GetAllAsync();
-            var _books = _mapper.Map<IEnumerable<BookReadDto>>(books);
+            var _books = _mapper.Map<IEnumerable<Book>>(books);
 
             return Ok(_books);
         }

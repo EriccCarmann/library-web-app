@@ -1,10 +1,14 @@
-﻿using Library.Domain.Entities;
+﻿using IdentityServer4.Services;
+using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Domain.Interfaces;
+using Library.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -13,15 +17,22 @@ namespace Library.Infrastructure.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<LibraryUser> _userManager;
-        private readonly SignInManager<LibraryUser> signInManager;
-       // private readonly ITokenService _tokenService;
+        private readonly SignInManager<LibraryUser> _signInManager;
+        private readonly IIdentityServerInteractionService _interactionService;
+
+        private readonly ApplicationDBContext _context;
         
-        public AccountController(UserManager<LibraryUser> userManager)//, ITokenService tokenService
+        public AccountController(UserManager<LibraryUser> userManager, 
+            SignInManager<LibraryUser> signInManager, 
+            ApplicationDBContext context,
+            IIdentityServerInteractionService interactionService)
         {
             _userManager = userManager;
-            //_tokenService = tokenService;
+            _signInManager = signInManager;
+            _context = context;
+            _interactionService = interactionService;
         }
-
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
@@ -35,26 +46,20 @@ namespace Library.Infrastructure.Controllers
                 var libraryUser = new LibraryUser
                 {
                     UserName = registerDto.UserName,
-                    Email = registerDto.Email,
+                    Email = registerDto.Email
                 };
 
-                var createUser = await _userManager.CreateAsync(libraryUser, registerDto.Password);
+                var createUser = await _userManager.CreateAsync(libraryUser, registerDto.Password); // like this
+                //var createUser = _userManager.CreateAsync(libraryUser, registerDto.Password).GetAwaiter().GetResult(); // or like that
 
                 if (createUser.Succeeded)
                 {
-                    var roleResult = await _userManager.AddToRoleAsync(libraryUser, "User");
+                    //var roleResult = await _userManager.AddToRoleAsync(libraryUser, "User");
+                    var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
 
                     if (roleResult.Succeeded)
                     {
                         return Ok(libraryUser);
-                      /*  return Ok(
-                            new NewUserDto 
-                            { 
-                                UserName = libraryUser.UserName,
-                                Email = libraryUser.Email,
-                                Token = _tokenService.CreateToken(libraryUser)
-                            }
-                            ); */
                     }
                     else
                     {
@@ -84,17 +89,28 @@ namespace Library.Infrastructure.Controllers
 
             if (user == null) return Unauthorized("Invalid Username");
 
-            var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            //var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
+
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
             return Ok(
-                new NewUserDto 
+                new ShowNewUserDto 
                 {
                     UserName = user.UserName,
                     Email = user.Email
                 }
             );
+        }
+
+        [Authorize]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            return Ok(users);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Library.Domain.Interfaces;
 using Library.Domain.Entities;
+using Library.Domain.Validators;
 using Library.Domain.Entities.BookDTOs;
-using Library.Infrastructure;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,13 @@ namespace Library.Infrastructure.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IBookRepository _bookRepository;
+        private readonly BookValidator _bookValidator;
 
-        public BookController(IMapper mapper, IBookRepository bookRepository)
+        public BookController(IMapper mapper, IBookRepository bookRepository, BookValidator bookValidator)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
+            _bookValidator = bookValidator;
         }
 
         [HttpGet]
@@ -50,6 +53,11 @@ namespace Library.Infrastructure.Controllers
              if (ModelState.IsValid)
              {
                 var _book = _mapper.Map<Book>(data);
+
+                if (!_bookValidator.Validate(_book).IsValid)
+                {
+                    return BadRequest();
+                }
 
                 await _bookRepository.CreateAsync(_book);
 

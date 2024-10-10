@@ -4,6 +4,6 @@ namespace Library.Domain.Entities
 {
     public class LibraryUser : IdentityUser
     {
-        //public ICollection<Book> takenBooks { get; set; }
+        public List<Book>? Books { get; } = null;
     }
 }

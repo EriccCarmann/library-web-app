@@ -16,6 +16,8 @@ using IdentityServer4.AspNetIdentity;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using Library.Infrastructure.Profiles;
+using FluentValidation;
+using Library.Domain.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,9 @@ builder.Services.AddAutoMapper(config =>
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 //builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(/*options => 

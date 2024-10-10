@@ -21,6 +21,10 @@ namespace Library.Infrastructure.Profiles
                 .ForMember(
                     dest => dest.Genre,
                     opt => opt.MapFrom(src => src.Genre)
+                )
+                .ForMember(
+                    dest => dest.Author,
+                    opt => opt.MapFrom(src => src.Author)
                 );
 
             CreateMap<Book, BookReadDto>()

@@ -47,8 +47,12 @@ namespace Library.Infrastructure.Controllers
          [HttpPost]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
          {
-             if (ModelState.IsValid) 
+             if (ModelState.IsValid)
              {
+                //var author = _bookRepository.FindAuthorByName(data.Author);
+
+                //data.AuthorBook = author;
+
                 var _book = _mapper.Map<Book>(data);
 
                 await _bookRepository.CreateAsync(_book);

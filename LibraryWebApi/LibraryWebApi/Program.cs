@@ -5,7 +5,7 @@ using Library.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Library.Infrastructure.Repositories;
+using Library.Infrastructure.Repository;
 using LibraryWebApi;
 using IdentityServer4.Models;
 using IdentityServer4.AccessTokenValidation;
@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using IdentityServer4.AspNetIdentity;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,7 +109,10 @@ builder.Services.AddAuthentication();
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
+//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
+    (options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 

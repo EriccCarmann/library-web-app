@@ -14,5 +14,7 @@ namespace Library.Domain.Interfaces
         Task<Book?> UpdateAsync(int id, BookUpdateDto bookUpdatingDto);
 
         Task<Book> DeleteAsync(int id);
+
+        Task<Author> FindAuthorByName(string name);
     }
 }

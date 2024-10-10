@@ -8,6 +8,6 @@
         public DateOnly DateOfBirth { get; set; }
         public string? Country { get; set; }
 
-        public ICollection<AuthorBook> AuthorBook { get; set; }
+        public List<Book> Books { get; } = new List<Book>();
     }
 }

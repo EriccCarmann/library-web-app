@@ -7,11 +7,12 @@
         public string? Genre { get; set; }
         public string? Description { get; set; }
         public string? ISBN { get; set; }
+
         public bool? IsTaken { get; set; } = false;
 
-       // public string UserId { get; set; }
-       // public LibraryUser? LibraryUser { get; set; }
+        public int? AuthorId { get; set; }
+        public Author? Author { get; set; }
 
-        public ICollection<AuthorBook> AuthorBook { get; set; }
+        public DateTime TakeDateTime { get; set; }
     }
 }

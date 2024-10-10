@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿/*using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Domain.Entities
 {
@@ -11,3 +11,4 @@ namespace Library.Domain.Entities
         public Author Author { get; set; }
     }
 }
+*/

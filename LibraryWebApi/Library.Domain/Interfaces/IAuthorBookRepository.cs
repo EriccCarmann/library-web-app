@@ -1,4 +1,4 @@
-﻿using Library.Domain.Entities;
+﻿/*using Library.Domain.Entities;
 
 namespace Library.Domain.Interfaces
 {
@@ -6,5 +6,7 @@ namespace Library.Domain.Interfaces
     {
         Task<List<AuthorBook>> GetAllAsync();
         Task<List<Book>> GetBooksByAuthorAsync(string name);
+        Task<AuthorBook> CreateBooksAuthorsAsync(string authorName, string bookName);
     }
 }
+*/

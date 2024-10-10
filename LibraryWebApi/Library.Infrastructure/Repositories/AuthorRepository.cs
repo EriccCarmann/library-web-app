@@ -22,7 +22,7 @@ namespace Library.Infrastructure.Repository
             return author;
         }
 
-        public async Task<Author> DeleteAsync(int id)
+        public async Task<Author?> DeleteAsync(int id)
         {
             var author = await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -42,12 +42,12 @@ namespace Library.Infrastructure.Repository
             return await _context.Author.ToListAsync();
         }
 
-        public async Task<Author> GetByIdAsync(int id)
+        public async Task<Author?> GetByIdAsync(int id)
         {
             return await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Author> UpdateAsync(int id, AuthorUpdateDto authorUpdateDto)
+        public async Task<Author?> UpdateAsync(int id, AuthorUpdateDto authorUpdateDto)
         {
             var existingAuthor = await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
 

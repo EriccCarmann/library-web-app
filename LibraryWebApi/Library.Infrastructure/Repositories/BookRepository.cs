@@ -25,6 +25,14 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.FindAsync(id);
         }
 
+        public async Task<Author?> FindAuthorByName(string? name)
+        {
+            var author = await _context.Author
+                .FirstOrDefaultAsync(a => (a.FirstName.ToLower() + " " + a.LastName.ToLower()).Contains(name));
+
+            return author;
+        }
+
         public async Task<Book> CreateAsync(Book book)
         {
             await _context.Book.AddAsync(book);
@@ -32,7 +40,7 @@ namespace Library.Infrastructure.Repository
             return book;
         }
 
-        public async Task<Book> DeleteAsync(int id)
+        public async Task<Book?> DeleteAsync(int? id)
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -65,6 +73,11 @@ namespace Library.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return existingBook;
+        }
+
+        public Task<Book> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

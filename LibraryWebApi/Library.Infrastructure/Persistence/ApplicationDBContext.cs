@@ -29,7 +29,7 @@ namespace Library.Infrastructure.Persistence
             };
             builder.Entity<IdentityRole>().HasData(roles);
 
-            builder.Entity<AuthorBook>(
+           /* builder.Entity<AuthorBook>(
                 x => x.HasKey(p => new { p.AuthorId, p.BookId }));
 
             builder.Entity<AuthorBook>()
@@ -40,11 +40,11 @@ namespace Library.Infrastructure.Persistence
             builder.Entity<AuthorBook>()
                 .HasOne(u => u.Book)
                 .WithMany(u => u.AuthorBook)
-                .HasForeignKey(u => u.BookId);
+                .HasForeignKey(u => u.BookId);*/
         }
 
         public DbSet<Book> Book { get; set; }
         public DbSet<Author> Author { get; set; }
-        public DbSet<AuthorBook> AuthorBook { get; set; }
+        //public DbSet<AuthorBook> AuthorBook { get; set; }
     }
 }

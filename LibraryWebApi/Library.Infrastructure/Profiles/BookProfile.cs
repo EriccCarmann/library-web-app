@@ -23,8 +23,8 @@ namespace Library.Infrastructure.Profiles
                     opt => opt.MapFrom(src => src.Genre)
                 )
                 .ForMember(
-                    dest => dest.Author,
-                    opt => opt.MapFrom(src => src.Author)
+                    dest => dest.AuthorId,
+                    opt => opt.MapFrom(src => src.AuthorId)
                 );
 
             CreateMap<Book, BookReadDto>()
@@ -44,6 +44,10 @@ namespace Library.Infrastructure.Profiles
                 .ForMember(
                     dest => dest.IsTaken,
                     opt => opt.MapFrom(src => src.IsTaken)
+                )
+                .ForMember(
+                    dest => dest.AuthorId,
+                    opt => opt.MapFrom(src => src.AuthorId)
                 );
         }
     }

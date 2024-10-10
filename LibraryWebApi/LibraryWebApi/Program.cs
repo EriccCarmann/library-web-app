@@ -15,10 +15,23 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using IdentityServer4.AspNetIdentity;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using Library.Infrastructure.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddAutoMapper(config =>
+{
+    config.AddProfile<BookProfile>();
+    config.AddProfile<AuthorProfile>();
+});
+
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(/*options => 
@@ -65,8 +78,6 @@ builder.Services.AddSwaggerGen(/*options =>
                 });
 }*/);
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -106,10 +117,6 @@ builder.Services.AddAuthorization(opt =>
 });
 
 builder.Services.AddAuthentication();
-
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
     (options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

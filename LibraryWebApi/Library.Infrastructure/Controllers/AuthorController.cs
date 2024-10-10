@@ -44,17 +44,17 @@ namespace Library.Infrastructure.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAuthor(AuthorCreateDto author) 
+        public async Task<IActionResult> CreateAuthor(Author author) 
         {
             if (ModelState.IsValid) 
             {
-                var _author = _mapper.Map<Author>(author);
+                //var _author = _mapper.Map<Author>(author);
 
-                await _authorRepository.CreateAsync(_author);
+                await _authorRepository.CreateAsync(author);
 
                // var newAuthor = _mapper.Map<AuthorReadDto>(author);
 
-                return CreatedAtAction("CreateAuthor", new {_author.Id}, _author);
+                return CreatedAtAction("CreateAuthor", new { author.Id}, author);
             }
             return BadRequest();
         }

@@ -13,19 +13,19 @@ namespace Library.Infrastructure.Profiles
                     dest => dest.Title,
                     opt => opt.MapFrom(src => src.Title))
                 .ForMember(
-                    dest => dest.ISBN,
-                    opt => opt.MapFrom(src => src.ISBN))
-                .ForMember(
-                    dest => dest.Description,
-                    opt => opt.MapFrom(src => src.Description))
-                .ForMember(
                     dest => dest.Genre,
                     opt => opt.MapFrom(src => src.Genre)
                 )
                 .ForMember(
+                    dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Description))
+                .ForMember(
+                    dest => dest.ISBN,
+                    opt => opt.MapFrom(src => src.ISBN))
+               /* .ForMember(
                     dest => dest.AuthorId,
                     opt => opt.MapFrom(src => src.AuthorId)
-                );
+                )*/;
 
             CreateMap<Book, BookReadDto>()
                 .ForMember(

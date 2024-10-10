@@ -7,6 +7,6 @@
         public string? Description { get; set; }
         public string? ISBN { get; set; }
         public bool? IsTaken { get; set; } = false;
-        public Author? Author { get; set; }
+        public int? AuthorId { get; set; }
     }
 }

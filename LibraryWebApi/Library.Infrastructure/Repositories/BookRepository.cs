@@ -69,6 +69,7 @@ namespace Library.Infrastructure.Repository
             existingBook.Description = bookUpdatingDto.Description;
             existingBook.ISBN = bookUpdatingDto.ISBN;
             existingBook.IsTaken = bookUpdatingDto.IsTaken;
+            existingBook.AuthorId = bookUpdatingDto.AuthorId;
 
             await _context.SaveChangesAsync();
 

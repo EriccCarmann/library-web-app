@@ -22,7 +22,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult> GetAll()
         {
             var books = await _bookRepository.GetAllAsync();
@@ -49,10 +49,6 @@ namespace Library.Infrastructure.Controllers
          {
              if (ModelState.IsValid)
              {
-                //var author = _bookRepository.FindAuthorByName(data.Author);
-
-                //data.AuthorBook = author;
-
                 var _book = _mapper.Map<Book>(data);
 
                 await _bookRepository.CreateAsync(_book);

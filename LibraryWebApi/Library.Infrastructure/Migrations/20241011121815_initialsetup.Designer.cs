@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241010161111_initialsetup")]
+    [Migration("20241011121815_initialsetup")]
     partial class initialsetup
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace Library.Infrastructure.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("DateOfBirth")
+                    b.Property<DateOnly?>("DateOfBirth")
                         .HasColumnType("date");
 
                     b.Property<string>("FirstName")
@@ -73,15 +73,20 @@ namespace Library.Infrastructure.Migrations
                     b.Property<bool?>("IsTaken")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("TakeDateTime")
+                    b.Property<DateTime?>("TakeDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Book");
                 });
@@ -180,13 +185,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1bb00cc7-4263-4174-b2c4-0eec720dbb4b",
+                            Id = "5d0e0488-2ae3-46b3-9dc4-b008590c8617",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "dc6d46a5-4aa3-41de-9040-ee3012ed22af",
+                            Id = "b982d447-e73c-47a6-9447-1d37241fecb8",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -304,7 +309,13 @@ namespace Library.Infrastructure.Migrations
                         .WithMany("Books")
                         .HasForeignKey("AuthorId");
 
+                    b.HasOne("Library.Domain.Entities.LibraryUser", "User")
+                        .WithMany("Books")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Author");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -359,6 +370,11 @@ namespace Library.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Library.Domain.Entities.Author", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Library.Domain.Entities.LibraryUser", b =>
                 {
                     b.Navigation("Books");
                 });

@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Library.Domain.Entities.LibraryUserDTOs;
+using System.Security.Claims;
+using IdentityModel;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Infrastructure.Persistence
 {
@@ -28,23 +32,9 @@ namespace Library.Infrastructure.Persistence
                 }
             };
             builder.Entity<IdentityRole>().HasData(roles);
-
-           /* builder.Entity<AuthorBook>(
-                x => x.HasKey(p => new { p.AuthorId, p.BookId }));
-
-            builder.Entity<AuthorBook>()
-                .HasOne(u => u.Author)
-                .WithMany(u => u.AuthorBook)
-                .HasForeignKey(u => u.AuthorId);
-
-            builder.Entity<AuthorBook>()
-                .HasOne(u => u.Book)
-                .WithMany(u => u.AuthorBook)
-                .HasForeignKey(u => u.BookId);*/
         }
 
         public DbSet<Book> Book { get; set; }
         public DbSet<Author> Author { get; set; }
-        //public DbSet<AuthorBook> AuthorBook { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
+using Library.Domain.Validators;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -14,11 +15,13 @@ namespace Library.Infrastructure.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository;
+        private readonly AuthorValidator _authorValidator;
 
-        public AuthorController(IMapper mapper, IAuthorRepository authorRepository) 
+        public AuthorController(IMapper mapper, IAuthorRepository authorRepository, AuthorValidator authorValidato) 
         {
             _mapper = mapper;
             _authorRepository = authorRepository;
+            _authorValidator = authorValidato;
         }
 
         [Authorize(Policy = "User")]
@@ -53,6 +56,11 @@ namespace Library.Infrastructure.Controllers
             if (ModelState.IsValid) 
             {
                 var _author = _mapper.Map<Author>(author);
+
+                if (!_authorValidator.Validate(_author).IsValid)
+                {
+                    return BadRequest();
+                }
 
                 await _authorRepository.CreateAsync(_author);
 

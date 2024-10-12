@@ -103,6 +103,7 @@ namespace Library.Infrastructure.Repository
             var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
 
             if (existingBook == null) return null;
+            if (existingBook.IsTaken == true) return null;
 
             existingBook.IsTaken = true;
             existingBook.UserId = userId;

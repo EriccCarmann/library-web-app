@@ -29,7 +29,8 @@ namespace Library.Infrastructure.Controllers
             _signInManager = signInManager;
             _context = context;
         }
-        
+
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
@@ -74,6 +75,7 @@ namespace Library.Infrastructure.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
         {
@@ -101,7 +103,7 @@ namespace Library.Infrastructure.Controllers
             );
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "User")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -110,6 +112,7 @@ namespace Library.Infrastructure.Controllers
             return Ok(users);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("addAdmin")]
         public async Task<IActionResult> ServiceProvider()
         {
@@ -134,7 +137,7 @@ namespace Library.Infrastructure.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("/swagger/v1/swagger.json");
+            return Ok();
         }
     }
 }

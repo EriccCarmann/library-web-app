@@ -3,6 +3,7 @@ using Library.Domain.Interfaces;
 using Library.Domain.Entities;
 using Library.Domain.Entities.AuthorDTOs;
 using Microsoft.EntityFrameworkCore;
+using Library.Domain.Helpers;
 
 namespace Library.Infrastructure.Repository
 {
@@ -37,9 +38,11 @@ namespace Library.Infrastructure.Repository
             return author;
         }
 
-        public async Task<List<Author>> GetAllAsync()
+        public async Task<List<Author>> GetAllAsync(QueryObject query)
         {
-            return await _context.Author.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.Author.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Author?> GetByIdAsync(int id)

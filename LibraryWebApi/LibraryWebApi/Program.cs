@@ -119,9 +119,11 @@ builder.Services.AddAuthorization(opt =>
     {
         builder.RequireClaim(ClaimTypes.Role, "Admin");
     });
+
     opt.AddPolicy("User", builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, "User");
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
+                                      || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
 

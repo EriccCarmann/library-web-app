@@ -6,6 +6,8 @@ using Library.Domain.Entities.BookDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -17,11 +19,17 @@ namespace Library.Infrastructure.Controllers
         private readonly IBookRepository _bookRepository;
         private readonly BookValidator _bookValidator;
 
-        public BookController(IMapper mapper, IBookRepository bookRepository, BookValidator bookValidator)
+        private readonly UserManager<LibraryUser> _userManager;
+
+        public BookController(IMapper mapper, 
+            IBookRepository bookRepository, 
+            BookValidator bookValidator,
+            UserManager<LibraryUser> userManager)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
             _bookValidator = bookValidator;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -94,6 +102,51 @@ namespace Library.Infrastructure.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPut("TakeBook")]
+        public async Task<IActionResult> TakeBook(string bookName)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null) return NotFound("userId");
+
+            var takeBook = await _bookRepository.TakeBook(bookName, userId);
+
+            if (takeBook == null) return NotFound("takeBook");
+
+            return Ok(takeBook);
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPut("GetTakenBooks")]
+        public async Task<IActionResult> GetTakenBooks([FromQuery] QueryObject query)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null) return NotFound();
+
+            var takenBooks = await _bookRepository.GetTakenBooks(userId, query);
+
+            if (takenBooks == null) return NotFound();
+
+            return Ok(takenBooks);
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPut("ReturnTakenBook")]
+        public async Task<IActionResult> ReurtnBook(string bookName)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null) return NotFound();
+
+            var takenBooks = await _bookRepository.ReturnBook(bookName, userId);
+
+            if (takenBooks == null) return NotFound();
+
+            return Ok(takenBooks);
         }
     }
 }

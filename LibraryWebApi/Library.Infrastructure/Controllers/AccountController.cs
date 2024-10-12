@@ -1,14 +1,10 @@
-﻿using IdentityServer4.Services;
-using Library.Domain.Entities;
+﻿using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
-using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
 namespace Library.Infrastructure.Controllers
@@ -47,12 +43,10 @@ namespace Library.Infrastructure.Controllers
                     Email = registerDto.Email
                 };
 
-                var createUser = await _userManager.CreateAsync(libraryUser, registerDto.Password); // like this
-                //var createUser = _userManager.CreateAsync(libraryUser, registerDto.Password).GetAwaiter().GetResult(); // or like that
+                var createUser = await _userManager.CreateAsync(libraryUser, registerDto.Password);
 
                 if (createUser.Succeeded)
                 {
-                    //var roleResult = await _userManager.AddToRoleAsync(libraryUser, "User");
                     var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
 
                     if (roleResult.Succeeded)
@@ -87,7 +81,6 @@ namespace Library.Infrastructure.Controllers
 
             if (user == null) return Unauthorized("Invalid Username");
 
-            //var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             var result = await signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
 
 

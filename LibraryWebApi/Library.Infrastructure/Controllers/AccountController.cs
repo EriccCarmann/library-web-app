@@ -110,27 +110,6 @@ namespace Library.Infrastructure.Controllers
 
             return Ok(users);
         }
-/*
-        [Authorize(Policy = "Admin")]
-        [HttpPost("addAdmin")]
-        public async Task<IActionResult> ServiceProvider()
-        {
-            var admin = new LibraryUser
-            {
-                UserName = "Admin"
-            };
-
-            var result = await _userManager.CreateAsync(admin, "123qwe123QWE*");
-
-            if (result.Succeeded)
-            {
-                var adm = await _userManager.AddClaimAsync(admin, new Claim(ClaimTypes.Role, "Admin"));
-
-                return Ok(adm);
-            }
-
-            return StatusCode(500, result.Errors);
-        }*/
 
         [HttpPost("LogOut")]
         public async Task<IActionResult> Logout()

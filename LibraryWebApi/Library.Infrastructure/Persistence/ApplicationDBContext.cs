@@ -2,12 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Library.Domain.Entities.LibraryUserDTOs;
 using System.Security.Claims;
-using IdentityModel;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection.Emit;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.Infrastructure.Persistence
 {

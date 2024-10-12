@@ -3,6 +3,7 @@ using Library.Domain.Entities;
 using Library.Domain.Entities.BookDTOs;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
+using Library.Domain.Helpers;
 
 namespace Library.Infrastructure.Repository
 {
@@ -15,9 +16,11 @@ namespace Library.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Book>> GetAllAsync()
+        public async Task<List<Book>> GetAllAsync(QueryObject query)
         {
-            return await _context.Book.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.Book.Skip(skipNumber).Take(query.PageSize).ToListAsync();         
         }
 
         public async Task<Book?> GetByIdAsync(int id)
@@ -76,9 +79,19 @@ namespace Library.Infrastructure.Repository
             return existingBook;
         }
 
-        public Task<Book> DeleteAsync(int id)
+        public async Task<Book> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var book = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (book == null)
+            {
+                return null;
+            }
+
+            _context.Book.Remove(book);
+            await _context.SaveChangesAsync();
+
+            return book;
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 
 namespace Library.Infrastructure.Controllers
@@ -18,21 +19,18 @@ namespace Library.Infrastructure.Controllers
     {
         private readonly UserManager<LibraryUser> _userManager;
         private readonly SignInManager<LibraryUser> _signInManager;
-        private readonly IIdentityServerInteractionService _interactionService;
-
         private readonly ApplicationDBContext _context;
         
-        public AccountController(UserManager<LibraryUser> userManager, 
+        public AccountController(UserManager<LibraryUser> userManager,
             SignInManager<LibraryUser> signInManager, 
-            ApplicationDBContext context,
-            IIdentityServerInteractionService interactionService)
+            ApplicationDBContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
-            _interactionService = interactionService;
         }
-        
+
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
@@ -77,6 +75,7 @@ namespace Library.Infrastructure.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
         {
@@ -111,6 +110,34 @@ namespace Library.Infrastructure.Controllers
             var users = await _userManager.Users.ToListAsync();
 
             return Ok(users);
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPost("addAdmin")]
+        public async Task<IActionResult> ServiceProvider()
+        {
+            var admin = new LibraryUser
+            {
+                UserName = "Admin"
+            };
+
+            var result = await _userManager.CreateAsync(admin, "123qwe123QWE*");
+
+            if (result.Succeeded)
+            {
+                var adm = await _userManager.AddClaimAsync(admin, new Claim(ClaimTypes.Role, "Admin"));
+
+                return Ok(adm);
+            }
+
+            return StatusCode(500, result.Errors);
+        }
+
+        [HttpPost("LogOut")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
     }
 }

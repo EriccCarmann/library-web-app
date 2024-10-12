@@ -115,9 +115,15 @@ builder.Services.AddIdentityServer()
 
 builder.Services.AddAuthorization(opt =>
 {
+    opt.AddPolicy("Admin", builder =>
+    {
+        builder.RequireClaim(ClaimTypes.Role, "Admin");
+    });
+
     opt.AddPolicy("User", builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, "User");
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
+                                      || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
 

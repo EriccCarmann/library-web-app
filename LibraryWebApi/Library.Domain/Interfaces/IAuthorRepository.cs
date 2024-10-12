@@ -1,11 +1,12 @@
 ﻿using Library.Domain.Entities;
 using Library.Domain.Entities.AuthorDTOs;
+using Library.Domain.Helpers;
 
 namespace Library.Domain.Interfaces
 {
     public interface IAuthorRepository
     {
-        Task<List<Author>> GetAllAsync();
+        Task<List<Author>> GetAllAsync(QueryObject query);
 
         Task<Author?> GetByIdAsync(int id);
 

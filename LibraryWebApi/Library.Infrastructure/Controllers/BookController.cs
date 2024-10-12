@@ -3,9 +3,9 @@ using Library.Domain.Interfaces;
 using Library.Domain.Entities;
 using Library.Domain.Validators;
 using Library.Domain.Entities.BookDTOs;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Library.Domain.Helpers;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -25,15 +25,16 @@ namespace Library.Infrastructure.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<ActionResult> GetAll()
+        [Authorize(Policy = "User")]
+        public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var books = await _bookRepository.GetAllAsync();
+            var books = await _bookRepository.GetAllAsync(queryObject);
             var _books = _mapper.Map<IEnumerable<Book>>(books);
 
             return Ok(_books);
         }
 
+        [Authorize(Policy = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -47,7 +48,8 @@ namespace Library.Infrastructure.Controllers
             return Ok(book);
         }
 
-         [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [HttpPost]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
          {
              if (ModelState.IsValid)
@@ -68,6 +70,7 @@ namespace Library.Infrastructure.Controllers
              return BadRequest();
          }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto) 
         {
@@ -81,7 +84,8 @@ namespace Library.Infrastructure.Controllers
             return Ok(_mapper.Map<BookReadDto>(updateBook));
         }
 
-       [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook([FromRoute] int id) 
         {
             var existingBook = await _bookRepository.DeleteAsync(id);

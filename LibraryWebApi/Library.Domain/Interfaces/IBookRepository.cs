@@ -1,11 +1,12 @@
-﻿using Library.Domain.Entities;
+﻿using Library.Domain.Helpers;
+using Library.Domain.Entities;
 using Library.Domain.Entities.BookDTOs;
 
 namespace Library.Domain.Interfaces
 {
     public interface IBookRepository
     {
-        Task<List<Book>> GetAllAsync();
+        Task<List<Book>> GetAllAsync(QueryObject query);
 
         Task<Book?> GetByIdAsync(int id);
 

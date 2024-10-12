@@ -4,6 +4,7 @@ using Library.Domain.Entities.AuthorDTOs;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Library.Domain.Helpers;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -20,16 +21,18 @@ namespace Library.Infrastructure.Controllers
             _authorRepository = authorRepository;
         }
 
+        [Authorize(Policy = "User")]
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var authors = await _authorRepository.GetAllAsync();
+            var authors = await _authorRepository.GetAllAsync(queryObject);
 
             var _authors = _mapper.Map<IEnumerable<AuthorReadDto>>(authors);
 
             return Ok(_authors);
         }
 
+        [Authorize(Policy = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -43,22 +46,24 @@ namespace Library.Infrastructure.Controllers
             return Ok(author);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateAuthor(Author author) 
+        public async Task<IActionResult> CreateAuthor(AuthorCreateDto author) 
         {
             if (ModelState.IsValid) 
             {
-                //var _author = _mapper.Map<Author>(author);
+                var _author = _mapper.Map<Author>(author);
 
-                await _authorRepository.CreateAsync(author);
+                await _authorRepository.CreateAsync(_author);
 
-               // var newAuthor = _mapper.Map<AuthorReadDto>(author);
+                var newAuthor = _mapper.Map<AuthorReadDto>(_author);
 
-                return CreatedAtAction("CreateAuthor", new { author.Id}, author);
+                return CreatedAtAction("CreateAuthor", new { _author.Id}, author);
             }
             return BadRequest();
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
@@ -72,7 +77,7 @@ namespace Library.Infrastructure.Controllers
             return Ok(_mapper.Map<AuthorReadDto>(updateAuthor));
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor([FromRoute] int id)
         {

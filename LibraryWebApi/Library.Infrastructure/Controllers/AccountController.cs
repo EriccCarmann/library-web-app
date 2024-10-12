@@ -75,7 +75,6 @@ namespace Library.Infrastructure.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
         {
@@ -111,7 +110,7 @@ namespace Library.Infrastructure.Controllers
 
             return Ok(users);
         }
-
+/*
         [Authorize(Policy = "Admin")]
         [HttpPost("addAdmin")]
         public async Task<IActionResult> ServiceProvider()
@@ -131,7 +130,7 @@ namespace Library.Infrastructure.Controllers
             }
 
             return StatusCode(500, result.Errors);
-        }
+        }*/
 
         [HttpPost("LogOut")]
         public async Task<IActionResult> Logout()

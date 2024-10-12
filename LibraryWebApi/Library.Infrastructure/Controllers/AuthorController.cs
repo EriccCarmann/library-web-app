@@ -34,7 +34,7 @@ namespace Library.Infrastructure.Controllers
 
         [Authorize(Policy = "User")]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<IActionResult?> GetById([FromRoute] int id)
         {
             var author = await _authorRepository.GetByIdAsync(id);
 
@@ -65,7 +65,7 @@ namespace Library.Infrastructure.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
+        public async Task<IActionResult?> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
             var updateAuthor = await _authorRepository.UpdateAsync(id, authorUpdateDto);
 
@@ -79,7 +79,7 @@ namespace Library.Infrastructure.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor([FromRoute] int id)
+        public async Task<IActionResult?> DeleteAuthor([FromRoute] int id)
         {
             var existingAuthor = await _authorRepository.DeleteAsync(id);
 

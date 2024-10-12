@@ -10,12 +10,12 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> GetByIdAsync(int id);
 
-        Task<Book> CreateAsync(Book book);
+        Task<Book?> CreateAsync(Book book);
 
         Task<Book?> UpdateAsync(int id, BookUpdateDto bookUpdatingDto);
 
-        Task<Book> DeleteAsync(int id);
+        Task<Book?> DeleteAsync(int id);
 
-        Task<Author> FindAuthorByName(string name);
+        Task<Author?> FindAuthorByName(string name);
     }
 }

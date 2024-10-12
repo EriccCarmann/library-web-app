@@ -28,15 +28,20 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.FindAsync(id);
         }
 
-        public async Task<Author?> FindAuthorByName(string? name)
+        public async Task<Author?> FindAuthorByName(string name)
         {
             var author = await _context.Author
                 .FirstOrDefaultAsync(a => (a.FirstName.ToLower() + " " + a.LastName.ToLower()).Contains(name));
 
+            if (author == null) 
+            {
+                return null;
+            }
+
             return author;
         }
 
-        public async Task<Book> CreateAsync(Book book)
+        public async Task<Book?> CreateAsync(Book book)
         {
             await _context.Book.AddAsync(book);
             await _context.SaveChangesAsync();
@@ -79,7 +84,7 @@ namespace Library.Infrastructure.Repository
             return existingBook;
         }
 
-        public async Task<Book> DeleteAsync(int id)
+        public async Task<Book?> DeleteAsync(int id)
         {
             var book = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241011121815_initialsetup")]
+    [Migration("20241012113630_initialsetup")]
     partial class initialsetup
     {
         /// <inheritdoc />
@@ -48,6 +48,32 @@ namespace Library.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Author");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Country = "United Kingdom",
+                            DateOfBirth = new DateOnly(1892, 1, 3),
+                            FirstName = "John Ronald Reuel",
+                            LastName = "Tolkien"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Country = "United Kingdom",
+                            DateOfBirth = new DateOnly(1948, 4, 28),
+                            FirstName = "Terry",
+                            LastName = "Pratchett"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Country = "United Kingdom",
+                            DateOfBirth = new DateOnly(1960, 11, 10),
+                            FirstName = "Neil",
+                            LastName = "Gaiman"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Entities.Book", b =>
@@ -89,6 +115,98 @@ namespace Library.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Book");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 1,
+                            Description = "The Hobbit, or There and Back Again is a children's fantasy novel by the English author J. R. R. Tolkien. It was published in 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction.",
+                            Genre = "Adventure",
+                            ISBN = "1-34-678910-2",
+                            IsTaken = false,
+                            Title = "Hobbit"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 1,
+                            Description = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.",
+                            Genre = "Adventure",
+                            ISBN = "2-33-679910-2",
+                            IsTaken = false,
+                            Title = "Lord Of The Rings"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AuthorId = 1,
+                            Description = "The Silmarillion is a book consisting of a collection of myths and stories in varying styles by the English writer J. R. R. Tolkien. It was edited, partly written, and published posthumously by his son Christopher Tolkien in 1977, assisted by Guy Gavriel Kay, who became a fantasy author.",
+                            Genre = "Adventure",
+                            ISBN = "2-33-679910-2",
+                            IsTaken = false,
+                            Title = "The Silmarillion"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AuthorId = 2,
+                            Description = "Small Gods is the thirteenth of Terry Pratchett's Discworld novels, published in 1992. It tells the origin of the god Om, and his relations with his prophet, the reformer Brutha. In the process, it satirises philosophy, religious institutions, people, and practices, and the role of religion in political life.",
+                            Genre = "Fantasy",
+                            ISBN = "0-06-017750-0",
+                            IsTaken = false,
+                            Title = "Small Gods"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AuthorId = 2,
+                            Description = "Guards! Guards! is a fantasy novel by British writer Terry Pratchett, the eighth in the Discworld series, first published in 1989. It is the first novel about the Ankh-Morpork City Watch. The first Discworld point-and-click adventure game borrowed heavily from the plot of Guards! Guards!",
+                            Genre = "Fantasy",
+                            ISBN = "3-33-679910-2",
+                            IsTaken = false,
+                            Title = "Guards! Guards!"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AuthorId = 2,
+                            Description = "Night Watch is a fantasy novel by British writer Terry Pratchett, the 29th book in his Discworld series, and the sixth starring the City Watch, published in 2002. The protagonist of the novel is Sir Samuel Vimes, commander of the Ankh-Morpork City Watch.",
+                            Genre = "Fantasy",
+                            ISBN = "3-73-674510-2",
+                            IsTaken = false,
+                            Title = "Night Watch"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AuthorId = 3,
+                            Description = "Norse Mythology is a 2017 book by Neil Gaiman, which retells several stories from Norse mythology. In the introduction, Gaiman describes where his fondness for the source material comes from. The book received positive reviews from critics.",
+                            Genre = "Fantasy",
+                            ISBN = "4-33-679910-2",
+                            IsTaken = false,
+                            Title = "Norse Mythology"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AuthorId = 3,
+                            Description = "The Graveyard Book is a young adult novel written by the English author Neil Gaiman, simultaneously published in Britain and America in 2008. The Graveyard Book traces the story of the boy Nobody \"Bod\" Owens, who is adopted and reared by the supernatural occupants of a graveyard after his family is brutally murdered.",
+                            Genre = "Horror fiction",
+                            ISBN = "4-53-679910-2",
+                            IsTaken = false,
+                            Title = "The ​Graveyard Book"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AuthorId = 3,
+                            Description = "Stardust is a 1999 fantasy novel by British writer Neil Gaiman, usually published with illustrations by Charles Vess.",
+                            Genre = "Adventure",
+                            ISBN = "4-39-674510-2",
+                            IsTaken = false,
+                            Title = "Stardust"
+                        });
                 });
 
             modelBuilder.Entity("Library.Domain.Entities.LibraryUser", b =>
@@ -154,6 +272,21 @@ namespace Library.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b74ddd14-6340-4840-95c2-db12554843e5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a47a307a-e15b-437c-913a-6a265939c99c",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEAh5nQE2mojGs/Dt4WVT4kla6JIMNIeCvBNG9xmsePQLHoy3bB2Ov8Y6Ll/yEaV3tA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3782421c-4ba5-43e6-84ae-22c54adb8702",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -185,13 +318,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5d0e0488-2ae3-46b3-9dc4-b008590c8617",
+                            Id = "1984c4c8-702e-4405-9df2-58c693ef6b42",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b982d447-e73c-47a6-9447-1d37241fecb8",
+                            Id = "ec5b3928-81e1-4a8f-8303-5581523e1f8b",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -245,6 +378,15 @@ namespace Library.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                            ClaimValue = "Admin",
+                            UserId = "b74ddd14-6340-4840-95c2-db12554843e5"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>

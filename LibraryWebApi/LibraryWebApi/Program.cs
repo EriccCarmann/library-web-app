@@ -4,15 +4,7 @@ using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using Library.Infrastructure.Repository;
 using LibraryWebApi;
-using IdentityServer4.Models;
-using IdentityServer4.AccessTokenValidation;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using IdentityServer4.AspNetIdentity;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using Library.Infrastructure.Profiles;
@@ -33,55 +25,12 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(/*options => 
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Description = "Demo Swagger API v1",
-        Title = "Swagger with IdentityServer4",
-        Version = "1.0.0"
-    });
-
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.OAuth2,
-        Flows = new OpenApiOAuthFlows
-        {
-            Password = new OpenApiOAuthFlow
-            {
-                TokenUrl = new Uri("https://localhost:5233/connect/token"),
-                Scopes = new Dictionary<string, string>
-                {
-                    {"LibraryWebApi", "Web API"}
-                }
-            }
-        }
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "oauth2"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
-}*/);
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -134,18 +83,10 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(/*options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger UI Demo");
-        options.OAuthClientId("client_id_swagger");
-        options.DocExpansion(DocExpansion.List);
-        options.OAuthScopeSeparator(" ");
-        options.OAuthClientSecret("client_secret_swagger");
-    }*/);
+    app.UseSwaggerUI();
 }
 
 app.UseRouting();

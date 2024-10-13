@@ -1,11 +1,15 @@
 ﻿using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -30,7 +34,7 @@ namespace Library.Infrastructure.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
-            try 
+            try
             {
                 if (!ModelState.IsValid) 
                 {
@@ -48,6 +52,31 @@ namespace Library.Infrastructure.Controllers
                 if (createUser.Succeeded)
                 {
                     var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
+
+                    var claims = new List<Claim>()
+                    {
+                        //new Claim(JwtRegisteredClaimNames.Sub, "name")
+                        new Claim(JwtRegisteredClaimNames.Sub, libraryUser.UserName)
+                    };
+
+                    byte[] secretBytes = Encoding.UTF8.GetBytes("secret_key_some_more_info_lol_and_some_more");
+
+                    var key = new SymmetricSecurityKey(secretBytes);
+
+                    var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                    var token = new JwtSecurityToken(
+                        "https://localhost:5233",
+                        "https://localhost:5233",
+                        claims,
+                        notBefore: DateTime.Now,
+                        expires: DateTime.Now.AddMinutes(60),
+                        signingCredentials
+                        );
+
+                    var t = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    Console.WriteLine(t);
 
                     if (roleResult.Succeeded)
                     {
@@ -85,6 +114,11 @@ namespace Library.Infrastructure.Controllers
 
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+
+          /*  var a = await HttpContext.GetTokenAsync("access_token");
+
+            Console.WriteLine("lkt;j;servoyijhneriohjcvnlks");
+            Console.WriteLine(a);*/
 
             return Ok(
                 new ShowNewUserDto 

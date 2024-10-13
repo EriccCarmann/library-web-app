@@ -18,6 +18,11 @@ using System.Text.Json.Serialization;
 using Library.Infrastructure.Profiles;
 using FluentValidation;
 using Library.Domain.Validators;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +38,6 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
@@ -83,6 +87,8 @@ builder.Services.AddSwaggerGen(/*options =>
                 });
 }*/);
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -98,6 +104,31 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, config =>
+    {
+        config.Authority = "https://localhost:5233";
+        config.ClientId = "client_id";
+        config.ClientSecret = "client_secret";
+        config.SaveTokens = true;
+
+        config.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
+
+        config.ResponseType = "code";
+
+        config.Scope.Add("LibraryWebApi");
+
+        config.GetClaimsFromUserInfoEndpoint = true;
+    });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -126,11 +157,6 @@ builder.Services.AddAuthorization(opt =>
                                       || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
-
-builder.Services.AddAuthentication();
-
-builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
-    (options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 

@@ -10,8 +10,6 @@ namespace LibraryWebApi
         {
             yield return new ApiResource("LibraryWebApi");
             yield return new ApiResource("Infrastructure");
-            yield return new ApiResource("Domain");
-            yield return new ApiResource("Application");
         }
 
         public static IEnumerable<IdentityResource> GetIdentityResources()
@@ -24,28 +22,29 @@ namespace LibraryWebApi
         {
             yield return new ApiScope("LibraryWebApi", "Web API");
             yield return new ApiScope("Infrastructure", "Web API");
-            yield return new ApiScope("Domain", "Web API");
-            yield return new ApiScope("Application", "Web API");
         }
 
         public static IEnumerable<Client> GetClients() =>
-       new List<Client>
-       {
+        new List<Client>
+        {
               new Client
               {
-                  ClientId = "client_id_swagger",
-                  ClientSecrets = { new Secret("client_secret_swagger".ToSha256()) },
-                  AllowedGrantTypes =  GrantTypes.ResourceOwnerPassword,
-                  AllowedCorsOrigins = { "https://localhost:7001" },
+                  ClientId = "client_id",
+                  ClientSecrets = { new Secret("client_secret".ToSha256()) },
+                  AllowedGrantTypes =  GrantTypes.Code,
+                  AllowedCorsOrigins = { "https://localhost:5233" },
+                  RefreshTokenExpiration = TokenExpiration.Absolute,
+                  AbsoluteRefreshTokenLifetime = 2592000,
                   AllowedScopes =
                   {
                       "LibraryWebApi",
+                      "Infrastructure",
                       IdentityServerConstants.StandardScopes.OpenId,
                       IdentityServerConstants.StandardScopes.Profile
                   },
                   RequireConsent = false
               },
-       };
+        };
 
         /*    public static IEnumerable<ApiScope> ApiScopes =>
                new List<ApiScope>

@@ -98,6 +98,38 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = "oidc";
+})
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddOpenIdConnect("oidc", config =>
+    {
+        config.Authority = "https://localhost:7076";
+        config.ClientId = "client_id_cf";
+        config.ClientSecret = "client_secret_cf";
+        config.SaveTokens = true;
+
+        config.ResponseType = "code";
+
+        config.GetClaimsFromUserInfoEndpoint = true;
+    });
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("Admin", builder =>
+    {
+        builder.RequireClaim(ClaimTypes.Role, "Admin");
+    });
+
+    opt.AddPolicy("User", builder =>
+    {
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
+                                      || x.User.HasClaim(ClaimTypes.Role, "Admin"));
+    });
+});
+
 builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -120,26 +152,6 @@ builder.Services.AddIdentityServer()
 
 #region Authentication and Authorization
 
-builder.Services.AddAuthorization();
-
-builder.Services.AddAuthentication(config =>
-{
-    config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    config.DefaultChallengeScheme = "oidc";
-})
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddOpenIdConnect("oidc", config =>
-    {
-        config.Authority = "https://localhost:7076";
-        config.ClientId = "client_id_cf";
-        config.ClientSecret = "client_secret_cf";
-        config.SaveTokens = true;
-
-        config.ResponseType = "code";
-
-        config.RequireHttpsMetadata = false;
-    });
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "Library.Identity.Cookie";
@@ -148,19 +160,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddAuthorization(opt =>
-{
-    opt.AddPolicy("Admin", builder =>
-    {
-        builder.RequireClaim(ClaimTypes.Role, "Admin");
-    });
-
-    opt.AddPolicy("User", builder =>
-    {
-        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
-                                      || x.User.HasClaim(ClaimTypes.Role, "Admin"));
-    });
-});
 #endregion
 
 var app = builder.Build();

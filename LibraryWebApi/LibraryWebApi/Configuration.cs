@@ -43,7 +43,7 @@ namespace LibraryWebApi
 
                   RedirectUris = { "https://localhost:10001/signin-oidc" }
               },*/
-           new Client
+          /* new Client
               {
                   ClientId = "client_id",
                   ClientSecrets = { new Secret("client_secret".ToSha256()) },
@@ -54,7 +54,7 @@ namespace LibraryWebApi
                   {
                       "LibraryWebApi"
                   },
-              },
+              },*/
               new Client
               {
                   ClientId = "client_id_cf",
@@ -69,10 +69,10 @@ namespace LibraryWebApi
                       IdentityServerConstants.StandardScopes.Profile
                   },
 
-                  RedirectUris = { "https://localhost:7076/signin-oidc" }
+                  RedirectUris = { "https://localhost:7076/signin-oidc" },
 
                    //AllowedCorsOrigins = { "https://localhost:5233" },
-                 // RequireConsent = false,
+                  RequireConsent = false
                   
               },
        };

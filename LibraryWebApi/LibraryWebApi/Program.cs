@@ -119,6 +119,9 @@ builder.Services.AddIdentityServer()
 #endregion
 
 #region Authentication and Authorization
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddAuthentication(config =>
 {
     config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -133,9 +136,9 @@ builder.Services.AddAuthentication(config =>
         config.SaveTokens = true;
 
         config.ResponseType = "code";
-    });
 
-builder.Services.AddAuthorization();
+        config.RequireHttpsMetadata = false;
+    });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -143,9 +146,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-/*
-
-builder.Services.AddHttpClient();*/
+builder.Services.AddHttpClient();
 
 builder.Services.AddAuthorization(opt =>
 {

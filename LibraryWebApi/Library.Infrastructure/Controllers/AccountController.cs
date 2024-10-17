@@ -101,8 +101,8 @@ namespace Library.Infrastructure.Controllers
             );
         }
 
-        [Authorize(Policy = "User")]
-        //[Authorize]
+        //[Authorize(Policy = "User")]
+        [Authorize]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {

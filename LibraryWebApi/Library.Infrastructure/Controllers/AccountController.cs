@@ -1,11 +1,20 @@
-﻿using Library.Domain.Entities;
+﻿using Azure.Core;
+using IdentityModel;
+using IdentityModel.Client;
+using IdentityServer4.Models;
+using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using System.Text;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -16,14 +25,18 @@ namespace Library.Infrastructure.Controllers
         private readonly UserManager<LibraryUser> _userManager;
         private readonly SignInManager<LibraryUser> _signInManager;
         private readonly ApplicationDBContext _context;
-        
+        private readonly IHttpClientFactory _httpClientFactory;
+
         public AccountController(UserManager<LibraryUser> userManager,
             SignInManager<LibraryUser> signInManager, 
-            ApplicationDBContext context)
+            ApplicationDBContext context
+            ,IHttpClientFactory httpClientFactory
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         [AllowAnonymous]
@@ -83,8 +96,9 @@ namespace Library.Infrastructure.Controllers
 
             var result = await signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
 
-
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+
+
 
             return Ok(
                 new ShowNewUserDto 
@@ -99,6 +113,13 @@ namespace Library.Infrastructure.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+           
+            var tok = await HttpContext.GetTokenAsync("access_token");
+            Console.WriteLine(tok);
+            var t = new JwtSecurityTokenHandler().ReadToken(tok);
+            Console.WriteLine(t);
+            return Ok(t);
+
             var users = await _userManager.Users.ToListAsync();
 
             return Ok(users);

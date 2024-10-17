@@ -10,8 +10,6 @@ namespace LibraryWebApi
         {
             yield return new ApiResource("LibraryWebApi");
             yield return new ApiResource("Infrastructure");
-            yield return new ApiResource("Domain");
-            yield return new ApiResource("Application");
         }
 
         public static IEnumerable<IdentityResource> GetIdentityResources()
@@ -24,26 +22,58 @@ namespace LibraryWebApi
         {
             yield return new ApiScope("LibraryWebApi", "Web API");
             yield return new ApiScope("Infrastructure", "Web API");
-            yield return new ApiScope("Domain", "Web API");
-            yield return new ApiScope("Application", "Web API");
         }
 
         public static IEnumerable<Client> GetClients() =>
        new List<Client>
        {
+         /*  new Client
+              {
+                  ClientId = "client_id_c",
+                  ClientSecrets = { new Secret("client_secret_cc".ToSha256()) },
+
+                  AllowedGrantTypes =  GrantTypes.Code,
+
+                  AllowedScopes =
+                  {
+                      "LibraryWebApi",
+                      "Infrastructure",
+                  },
+                  RequireConsent = false,
+
+                  RedirectUris = { "https://localhost:10001/signin-oidc" }
+              },*/
+          /* new Client
+              {
+                  ClientId = "client_id",
+                  ClientSecrets = { new Secret("client_secret".ToSha256()) },
+
+                  AllowedGrantTypes =  GrantTypes.ClientCredentials,
+
+                  AllowedScopes =
+                  {
+                      "LibraryWebApi"
+                  },
+              },*/
               new Client
               {
-                  ClientId = "client_id_swagger",
-                  ClientSecrets = { new Secret("client_secret_swagger".ToSha256()) },
+                  ClientId = "client_id_cf",
+                  ClientSecrets = { new Secret("client_secret_cf".ToSha256()) },
+
                   AllowedGrantTypes =  GrantTypes.ResourceOwnerPassword,
-                  AllowedCorsOrigins = { "https://localhost:7001" },
+             
                   AllowedScopes =
                   {
                       "LibraryWebApi",
                       IdentityServerConstants.StandardScopes.OpenId,
                       IdentityServerConstants.StandardScopes.Profile
                   },
+
+                  RedirectUris = { "https://localhost:7076/signin-oidc" },
+
+                   //AllowedCorsOrigins = { "https://localhost:5233" },
                   RequireConsent = false
+                  
               },
        };
 

@@ -25,7 +25,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "User")]
-        [HttpGet]
+        [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
             var authors = await _authorRepository.GetAllAsync(queryObject);
@@ -50,7 +50,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost]
+        [HttpPost("createauthor")]
         public async Task<IActionResult> CreateAuthor(AuthorCreateDto author) 
         {
             if (ModelState.IsValid) 

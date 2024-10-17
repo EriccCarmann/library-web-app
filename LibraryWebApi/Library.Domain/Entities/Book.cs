@@ -11,6 +11,7 @@
         public string? UserId { get; set; }
         public bool? IsTaken { get; set; } = false;
         public Nullable<DateTime> TakeDateTime { get; set; } = null;
+        public Nullable<DateTime> ReturnDateTime { get; set; } = null;
 
         public Author? Author { get; set; }
         public LibraryUser? User { get; set; }

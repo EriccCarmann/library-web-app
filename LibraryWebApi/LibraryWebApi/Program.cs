@@ -21,6 +21,7 @@ using Library.Infrastructure.Controllers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
+using LibraryWebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +108,14 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityServer()
+    .AddAspNetIdentity<LibraryUser>()
+    .AddInMemoryApiResources(Configuration.GetApiResources())
+    .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
+    .AddInMemoryClients(Configuration.GetClients())
+    .AddInMemoryApiScopes(Configuration.GetApiScopes())
+    .AddDeveloperSigningCredential();
 #endregion
 
 #region Authentication and Authorization
@@ -118,7 +127,7 @@ builder.Services.AddAuthentication(config =>
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddOpenIdConnect("oidc", config =>
     {
-        config.Authority = "https://localhost:10001";
+        config.Authority = "https://localhost:7076";
         config.ClientId = "client_id_cf";
         config.ClientSecret = "client_secret_cf";
         config.SaveTokens = true;
@@ -138,7 +147,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddHttpClient();*/
 
-/*builder.Services.AddAuthorization(opt =>
+builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("Admin", builder =>
     {
@@ -150,7 +159,7 @@ builder.Services.AddHttpClient();*/
         builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
                                       || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
-});*/
+});
 #endregion
 
 var app = builder.Build();
@@ -169,6 +178,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.UseIdentityServer();
 
 app.UseCookiePolicy();
 

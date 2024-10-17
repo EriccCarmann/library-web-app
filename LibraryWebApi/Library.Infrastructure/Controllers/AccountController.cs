@@ -78,7 +78,6 @@ namespace Library.Infrastructure.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
         {
-
             if (!ModelState.IsValid) 
             {
                 return BadRequest();
@@ -102,8 +101,8 @@ namespace Library.Infrastructure.Controllers
             );
         }
 
-        //[Authorize(Policy = "User")]
-        [Authorize]
+        [Authorize(Policy = "User")]
+        //[Authorize]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {

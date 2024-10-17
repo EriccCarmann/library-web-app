@@ -1,10 +1,12 @@
-﻿using Library.Domain.Entities;
+﻿using IdentityModel.Client;
+using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
 using System.Security.Claims;
 
 namespace Library.Infrastructure.Controllers
@@ -16,14 +18,18 @@ namespace Library.Infrastructure.Controllers
         private readonly UserManager<LibraryUser> _userManager;
         private readonly SignInManager<LibraryUser> _signInManager;
         private readonly ApplicationDBContext _context;
-        
+       // private readonly IHttpClientFactory _httpClientFactory;
+
         public AccountController(UserManager<LibraryUser> userManager,
             SignInManager<LibraryUser> signInManager, 
-            ApplicationDBContext context)
+            ApplicationDBContext context
+            //,IHttpClientFactory httpClientFactory
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            //_httpClientFactory = httpClientFactory;
         }
 
         [AllowAnonymous]
@@ -72,6 +78,7 @@ namespace Library.Infrastructure.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
         {
+
             if (!ModelState.IsValid) 
             {
                 return BadRequest();
@@ -95,7 +102,8 @@ namespace Library.Infrastructure.Controllers
             );
         }
 
-        [Authorize(Policy = "User")]
+        //[Authorize(Policy = "User")]
+        [Authorize]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {

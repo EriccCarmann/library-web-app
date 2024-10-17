@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Library.Infrastructure.Repository;
-using LibraryWebApi;
 using IdentityServer4.Models;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.OpenApi.Models;
@@ -18,11 +17,14 @@ using System.Text.Json.Serialization;
 using Library.Infrastructure.Profiles;
 using FluentValidation;
 using Library.Domain.Validators;
+using Library.Infrastructure.Controllers;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
+#region AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddAutoMapper(config =>
@@ -33,10 +35,15 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-//builder.Services.AddScoped<IAuthorBookRepository, AuthorBookRepository>();
+#endregion
 
+#region Validation
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
+#endregion
+
+#region 
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(/*options => 
@@ -82,7 +89,9 @@ builder.Services.AddSwaggerGen(/*options =>
                     }
                 });
 }*/);
+#endregion
 
+#region DB and Identity
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -98,6 +107,26 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
+#endregion
+
+#region Authentication and Authorization
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = "oidc";
+})
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddOpenIdConnect("oidc", config =>
+    {
+        config.Authority = "https://localhost:10001";
+        config.ClientId = "client_id_cf";
+        config.ClientSecret = "client_secret_cf";
+        config.SaveTokens = true;
+
+        config.ResponseType = "code";
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -105,15 +134,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-builder.Services.AddIdentityServer()
-    .AddAspNetIdentity<LibraryUser>()
-    .AddInMemoryApiResources(Configuration.GetApiResources())
-    .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
-    .AddInMemoryClients(Configuration.GetClients())
-    .AddInMemoryApiScopes(Configuration.GetApiScopes())
-    .AddDeveloperSigningCredential();
+/*
 
-builder.Services.AddAuthorization(opt =>
+builder.Services.AddHttpClient();*/
+
+/*builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("Admin", builder =>
     {
@@ -125,16 +150,11 @@ builder.Services.AddAuthorization(opt =>
         builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "User")
                                       || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
-});
-
-builder.Services.AddAuthentication();
-
-builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>
-    (options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+});*/
+#endregion
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -150,7 +170,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseIdentityServer();
 app.UseCookiePolicy();
 
 app.UseHttpsRedirection();

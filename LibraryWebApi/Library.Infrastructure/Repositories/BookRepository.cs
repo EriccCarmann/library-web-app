@@ -30,6 +30,11 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.FindAsync(id);
         }
 
+        public async Task<Book?> GetByIdISBN(string ISBN)
+        {
+            return await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+        }
+
         public async Task<Author?> FindAuthorByName(string name)
         {
             var author = await _context.Author

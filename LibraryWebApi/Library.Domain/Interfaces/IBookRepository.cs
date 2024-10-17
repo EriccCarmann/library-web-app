@@ -11,6 +11,8 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> GetByIdAsync(int id);
 
+        Task<Book?> GetByIdISBN(string ISBN);
+
         Task<Book?> CreateAsync(Book book);
 
         Task<Book?> UpdateAsync(int id, BookUpdateDto bookUpdatingDto);

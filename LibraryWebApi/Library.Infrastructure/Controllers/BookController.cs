@@ -31,9 +31,9 @@ namespace Library.Infrastructure.Controllers
             _bookValidator = bookValidator;
             _userManager = userManager;
         }
-
-        [HttpGet]
+     
         [Authorize(Policy = "User")]
+        [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
             var books = await _bookRepository.GetAllAsync(queryObject);
@@ -56,8 +56,22 @@ namespace Library.Infrastructure.Controllers
             return Ok(book);
         }
 
+        [Authorize(Policy = "User")]
+        [HttpGet("getbyisbn")]
+        public async Task<IActionResult> GetByISBN(string ISBN)
+        {
+            var book = await _bookRepository.GetByIdISBN(ISBN);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(book);
+        }
+
         [Authorize(Policy = "Admin")]
-        [HttpPost]
+        [HttpPost("createbook")]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
          {
              if (ModelState.IsValid)
@@ -105,7 +119,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "User")]
-        [HttpPut("TakeBook")]
+        [HttpPut("takebook")]
         public async Task<IActionResult> TakeBook(string bookName)
         {
             var userId = _userManager.GetUserId(User);
@@ -120,7 +134,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "User")]
-        [HttpPut("GetTakenBooks")]
+        [HttpPut("gettakenbooks")]
         public async Task<IActionResult> GetTakenBooks([FromQuery] QueryObject query)
         {
             var userId = _userManager.GetUserId(User);
@@ -135,7 +149,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "User")]
-        [HttpPut("ReturnTakenBook")]
+        [HttpPut("returntakenbook")]
         public async Task<IActionResult> ReurtnBook(string bookName)
         {
             var userId = _userManager.GetUserId(User);

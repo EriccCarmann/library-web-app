@@ -60,7 +60,7 @@ namespace LibraryWebApi
                   ClientId = "client_id_cf",
                   ClientSecrets = { new Secret("client_secret_cf".ToSha256()) },
 
-                  AllowedGrantTypes =  GrantTypes.Code,
+                  AllowedGrantTypes =  GrantTypes.ResourceOwnerPassword,
              
                   AllowedScopes =
                   {

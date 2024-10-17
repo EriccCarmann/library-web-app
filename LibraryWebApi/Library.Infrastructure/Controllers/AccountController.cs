@@ -98,17 +98,7 @@ namespace Library.Infrastructure.Controllers
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
-          /*  var token = new JwtSecurityToken(
-            issuer: "https://localhost:7076/",
-            audience: "https://localhost:7076/",
-            claims: await _userManager.GetClaimsAsync(user),
-            expires: DateTime.UtcNow.AddMinutes(60), // Token expiration time
-            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("LongKeyStringThatIsASecretKeyLarger")),
-                SecurityAlgorithms.HmacSha256)
-        );
-            var r = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(r);*/
 
             return Ok(
                 new ShowNewUserDto 
@@ -123,13 +113,12 @@ namespace Library.Infrastructure.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            
-
-          /*  var tok = await HttpContext.GetTokenAsync("access_token");
+           
+            var tok = await HttpContext.GetTokenAsync("access_token");
             Console.WriteLine(tok);
             var t = new JwtSecurityTokenHandler().ReadToken(tok);
             Console.WriteLine(t);
-            return Ok(t);*/
+            return Ok(t);
 
             var users = await _userManager.Users.ToListAsync();
 

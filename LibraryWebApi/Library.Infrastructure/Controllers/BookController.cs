@@ -57,7 +57,7 @@ namespace Library.Infrastructure.Controllers
         }
 
         [Authorize(Policy = "User")]
-        [HttpGet("getbyisbn")]
+        [HttpGet("getbyISBN")]
         public async Task<IActionResult> GetByISBN(string ISBN)
         {
             var book = await _bookRepository.GetByIdISBN(ISBN);

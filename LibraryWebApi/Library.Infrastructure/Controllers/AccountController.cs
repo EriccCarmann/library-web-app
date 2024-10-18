@@ -1,6 +1,7 @@
 ﻿using Library.Domain.Entities;
 using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -102,6 +103,11 @@ namespace Library.Infrastructure.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+       /*     var t = HttpContext.GetTokenAsync("access_token");
+            var tt = HttpContext.GetTokenAsync("refresh_token");
+
+            return Ok(tt);*/
+
             var users = await _userManager.Users.ToListAsync();
 
             return Ok(users);

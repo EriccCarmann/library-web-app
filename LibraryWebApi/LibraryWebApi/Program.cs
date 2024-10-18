@@ -4,26 +4,18 @@ using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using Library.Infrastructure.Repository;
-using IdentityServer4.Models;
-using IdentityServer4.AccessTokenValidation;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using IdentityServer4.AspNetIdentity;
 using System.Security.Claims;
-using System.Text.Json.Serialization;
 using Library.Infrastructure.Profiles;
 using FluentValidation;
 using Library.Domain.Validators;
-using Library.Infrastructure.Controllers;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.DependencyInjection;
 using LibraryWebApi;
+using Library.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 #region AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -176,6 +168,8 @@ if (app.Environment.IsDevelopment())
         options.OAuthClientSecret("client_secret_swagger");
     }*/);
 }
+
+app.UseExceptionHandler();
 
 app.UseRouting();
 

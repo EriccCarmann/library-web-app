@@ -17,18 +17,17 @@ namespace Library.Infrastructure.Controllers
         private readonly UserManager<LibraryUser> _userManager;
         private readonly SignInManager<LibraryUser> _signInManager;
         private readonly ApplicationDBContext _context;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private UserManager<LibraryUser> userManager;
+        private SignInManager<LibraryUser> signInManager;
+        private ApplicationDBContext? context;
 
         public AccountController(UserManager<LibraryUser> userManager,
             SignInManager<LibraryUser> signInManager, 
-            ApplicationDBContext context
-            ,IHttpClientFactory httpClientFactory
-            )
+            ApplicationDBContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
-            _httpClientFactory = httpClientFactory;
         }
 
         [AllowAnonymous]
@@ -103,11 +102,6 @@ namespace Library.Infrastructure.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-       /*     var t = HttpContext.GetTokenAsync("access_token");
-            var tt = HttpContext.GetTokenAsync("refresh_token");
-
-            return Ok(tt);*/
-
             var users = await _userManager.Users.ToListAsync();
 
             return Ok(users);

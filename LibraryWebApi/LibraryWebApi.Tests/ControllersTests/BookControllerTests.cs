@@ -6,6 +6,7 @@ using Library.Domain.Validators;
 using Library.Infrastructure.Controllers;
 using FakeItEasy;
 using Library.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
@@ -14,6 +15,7 @@ namespace LibraryWebApi.Tests.ControllersTests
         private readonly IMapper _mapper;
         private readonly IBookRepository _bookRepository;
         private readonly BookValidator _bookValidator;
+        private readonly UserManager<LibraryUser> _userManager;
 
         private readonly BookController _bookController;
 
@@ -22,8 +24,9 @@ namespace LibraryWebApi.Tests.ControllersTests
             _mapper = A.Fake<IMapper>();
             _bookValidator = A.Fake<BookValidator>();
             _bookRepository = A.Fake<IBookRepository>();
+            _userManager = A.Fake<UserManager<LibraryUser>>();
 
-            _bookController = new BookController(_mapper, _bookRepository, _bookValidator);
+            _bookController = new BookController(_mapper, _bookRepository, _bookValidator, _userManager);
         }
 
         [Fact]

@@ -113,6 +113,7 @@ namespace Library.Infrastructure.Repository
             existingBook.IsTaken = true;
             existingBook.UserId = userId;
             existingBook.TakeDateTime = DateTime.UtcNow;
+            existingBook.ReturnDateTime = DateTime.UtcNow.AddDays(7);
 
             await _context.SaveChangesAsync();
 
@@ -135,6 +136,7 @@ namespace Library.Infrastructure.Repository
             existingBook.IsTaken = false;
             existingBook.UserId = null;
             existingBook.TakeDateTime = null;
+            existingBook.ReturnDateTime = null;
 
             await _context.SaveChangesAsync();
 

@@ -2,6 +2,7 @@
 using Library.Domain.Entities;
 using Library.Domain.Entities.BookDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Domain.Interfaces
 {
@@ -26,5 +27,7 @@ namespace Library.Domain.Interfaces
         Task<List<Book>?> GetTakenBooks(string userId, QueryObject query);
 
         Task<Book?> ReturnBook(string bookTitle, string userId);
+
+        Task<Book?> AddCover(string bookTitle, IFormFile file);
     }
 }

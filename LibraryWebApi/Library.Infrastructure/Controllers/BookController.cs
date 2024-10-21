@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Infrastructure.Controllers
 {
@@ -161,6 +161,15 @@ namespace Library.Infrastructure.Controllers
             if (takenBooks == null) return NotFound();
 
             return Ok(takenBooks);
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("addcover")]
+        public async Task<IActionResult> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
+        {
+            await _bookRepository.AddCover(bookTitle, file);
+            var all = await GetAll(queryObject);
+            return Ok(all);
         }
     }
 }

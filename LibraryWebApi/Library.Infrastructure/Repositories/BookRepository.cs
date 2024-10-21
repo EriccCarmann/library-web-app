@@ -4,8 +4,7 @@ using Library.Domain.Entities.BookDTOs;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
 using Library.Domain.Helpers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Infrastructure.Repository
 {
@@ -20,6 +19,7 @@ namespace Library.Infrastructure.Repository
 
         public async Task<List<Book>> GetAllAsync(QueryObject query)
         {
+
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
             return await _context.Book.Skip(skipNumber).Take(query.PageSize).ToListAsync();         
@@ -113,6 +113,7 @@ namespace Library.Infrastructure.Repository
             existingBook.IsTaken = true;
             existingBook.UserId = userId;
             existingBook.TakeDateTime = DateTime.UtcNow;
+            existingBook.ReturnDateTime = DateTime.UtcNow.AddDays(7);
 
             await _context.SaveChangesAsync();
 
@@ -135,10 +136,34 @@ namespace Library.Infrastructure.Repository
             existingBook.IsTaken = false;
             existingBook.UserId = null;
             existingBook.TakeDateTime = null;
+            existingBook.ReturnDateTime = null;
 
             await _context.SaveChangesAsync();
 
             return existingBook;
+        }
+
+        public async Task<Book?> AddCover(string bookTitle, IFormFile file)
+        {
+            var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
+
+            if (file == null && file.Length <= 0 && existingBook == null)
+            {
+                return null;
+            }
+
+            byte[] imageData = new byte[file.Length];
+            using (var stream = file.OpenReadStream())
+            {
+                await stream.ReadAsync(imageData, 0, imageData.Length);
+            }
+
+            existingBook.Cover = imageData;
+
+            _context.SaveChanges();
+
+            return existingBook;
+
         }
     }
 }

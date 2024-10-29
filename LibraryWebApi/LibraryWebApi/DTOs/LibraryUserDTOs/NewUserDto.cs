@@ -1,4 +1,4 @@
-﻿namespace Library.Domain.Entities.LibraryUserDTOs
+﻿namespace LibraryWebApi.DTOs.LibraryUserDTOs
 {
     public class ShowNewUserDto
     {

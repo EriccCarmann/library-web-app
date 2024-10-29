@@ -1,4 +1,4 @@
-﻿namespace Library.Domain.Entities.AuthorDTOs
+﻿namespace LibraryWebApi.DTOs.AuthorDTOs
 {
     public class AuthorUpdateDto
     {

@@ -7,10 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Library.Infrastructure.Profiles;
 using FluentValidation;
-using Library.Domain.Validators;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
-using Library.Infrastructure;
+using LibraryWebApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 

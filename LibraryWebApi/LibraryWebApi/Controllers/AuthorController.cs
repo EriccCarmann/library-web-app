@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Library.Domain.Interfaces;
-using Library.Domain.Entities.AuthorDTOs;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
-using Library.Domain.Validators;
+using LibraryWebApi.Validators;
+using LibraryWebApi.DTOs.AuthorDTOs;
 
-namespace Library.Infrastructure.Controllers
+namespace LibraryWebApi.Controllers
 {
     [Route("/author")]
     [ApiController]

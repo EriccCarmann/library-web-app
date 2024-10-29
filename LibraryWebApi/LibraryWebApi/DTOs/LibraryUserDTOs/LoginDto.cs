@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Library.Domain.Entities.LibraryUserDTOs
+namespace LibraryWebApi.DTOs.LibraryUserDTOs
 {
-    public class RegisterDto
+    public class LoginDto
     {
         [Required]
         public string? UserName { get; set; }
-        [Required]
-        [EmailAddress]
-        public string? Email { get; set; }
         [Required]
         public string Password { get; set; }
     }

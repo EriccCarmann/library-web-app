@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Library.Domain.Entities;
 
-namespace Library.Domain.Validators
+namespace LibraryWebApi.Validators
 {
     public class AuthorValidator : AbstractValidator<Author>
     {

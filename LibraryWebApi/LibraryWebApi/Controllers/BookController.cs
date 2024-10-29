@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using Library.Domain.Interfaces;
 using Library.Domain.Entities;
-using Library.Domain.Validators;
-using Library.Domain.Entities.BookDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
+using LibraryWebApi.Validators;
+using LibraryWebApi.DTOs.BookDTOs;
 
-namespace Library.Infrastructure.Controllers
+namespace LibraryWebApi.Controllers
 {
     [Route("/book")]
     [ApiController]

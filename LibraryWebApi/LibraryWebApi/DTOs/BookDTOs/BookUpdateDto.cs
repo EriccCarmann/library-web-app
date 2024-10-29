@@ -1,4 +1,4 @@
-﻿namespace Library.Domain.Entities.BookDTOs
+﻿namespace LibraryWebApi.DTOs.BookDTOs
 {
     public class BookUpdateDto
     {

@@ -1,7 +1,6 @@
 ﻿using Library.Infrastructure.Persistence;
 using Library.Domain.Interfaces;
 using Library.Domain.Entities;
-using Library.Domain.Entities.AuthorDTOs;
 using Microsoft.EntityFrameworkCore;
 using Library.Domain.Helpers;
 

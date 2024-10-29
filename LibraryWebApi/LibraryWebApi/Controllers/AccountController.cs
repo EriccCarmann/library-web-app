@@ -1,14 +1,13 @@
 ﻿using Library.Domain.Entities;
-using Library.Domain.Entities.LibraryUserDTOs;
 using Library.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication;
+using LibraryWebApi.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace Library.Infrastructure.Controllers
+namespace LibraryWebApi.Controllers
 {
     [Route("api/account")]
     [ApiController]

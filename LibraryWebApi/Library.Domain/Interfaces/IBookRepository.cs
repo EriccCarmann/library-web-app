@@ -1,7 +1,5 @@
 ﻿using Library.Domain.Helpers;
 using Library.Domain.Entities;
-using Library.Domain.Entities.BookDTOs;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
 namespace Library.Domain.Interfaces
@@ -16,7 +14,7 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> CreateAsync(Book book);
 
-        Task<Book?> UpdateAsync(int id, BookUpdateDto bookUpdatingDto);
+        Task<Book?> UpdateAsync(int id, byte[] cover);
 
         Task<Book?> DeleteAsync(int id);
 

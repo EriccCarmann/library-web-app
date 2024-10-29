@@ -7,6 +7,7 @@ using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
 using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.BookDTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWebApi.Controllers
 {
@@ -166,8 +167,17 @@ namespace LibraryWebApi.Controllers
         [HttpPut("addcover")]
         public async Task<IActionResult> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
         {
+            byte[] imageData = new byte[file.Length];
+
+            using (var stream = file.OpenReadStream())
+            {
+                await stream.ReadAsync(imageData, 0, imageData.Length);
+            }
+
             await _bookRepository.AddCover(bookTitle, file);
+
             var all = await GetAll(queryObject);
+
             return Ok(all);
         }
     }

@@ -143,7 +143,7 @@ namespace Library.Infrastructure.Repository
             return existingBook;
         }
 
-        public async Task<Book?> AddCover(string bookTitle, IFormFile file)
+        public async Task<Book?> AddCover(string bookTitle, byte[] file)
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
 
@@ -152,13 +152,7 @@ namespace Library.Infrastructure.Repository
                 return null;
             }
 
-            byte[] imageData = new byte[file.Length];
-            using (var stream = file.OpenReadStream())
-            {
-                await stream.ReadAsync(imageData, 0, imageData.Length);
-            }
-
-            existingBook.Cover = imageData;
+            existingBook.Cover = file;
 
             _context.SaveChanges();
 

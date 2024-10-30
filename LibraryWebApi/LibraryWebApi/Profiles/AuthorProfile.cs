@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using Library.Domain.Entities.AuthorDTOs;
+using LibraryWebApi.DTOs.AuthorDTOs;
 
-namespace Library.Infrastructure.Profiles
+namespace LibraryWebApi.Profiles
 {
     public class AuthorProfile : Profile
     {

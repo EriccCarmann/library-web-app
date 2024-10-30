@@ -49,7 +49,7 @@ namespace Library.Infrastructure.Repository
             return await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Author?> UpdateAsync(int id, AuthorUpdateDto authorUpdateDto)
+        public async Task<Author?> UpdateAsync(int id, Author updateAuthor)
         {
             var existingAuthor = await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -58,10 +58,10 @@ namespace Library.Infrastructure.Repository
                 return null;
             }
 
-            existingAuthor.FirstName = authorUpdateDto.FirstName;
-            existingAuthor.LastName = authorUpdateDto.LastName;
-            existingAuthor.DateOfBirth = authorUpdateDto.DateOfBirth;
-            existingAuthor.Country = authorUpdateDto.Country;
+            existingAuthor.FirstName = updateAuthor.FirstName;
+            existingAuthor.LastName = updateAuthor.LastName;
+            existingAuthor.DateOfBirth = updateAuthor.DateOfBirth;
+            existingAuthor.Country = updateAuthor.Country;
 
             await _context.SaveChangesAsync();
 

@@ -1,6 +1,5 @@
 ﻿using Library.Domain.Interfaces;
 using Library.Domain.Entities;
-using Library.Domain.Entities.BookDTOs;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
 using Library.Domain.Helpers;
@@ -70,7 +69,7 @@ namespace Library.Infrastructure.Repository
             return existingBook;
         }
 
-        public async Task<Book?> UpdateAsync(int id, BookUpdateDto bookUpdatingDto)
+        public async Task<Book?> UpdateAsync(int id, Book updateBook)
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -79,12 +78,12 @@ namespace Library.Infrastructure.Repository
                 return null;
             }
 
-            existingBook.Title = bookUpdatingDto.Title;
-            existingBook.Genre = bookUpdatingDto.Genre;
-            existingBook.Description = bookUpdatingDto.Description;
-            existingBook.ISBN = bookUpdatingDto.ISBN;
-            existingBook.IsTaken = bookUpdatingDto.IsTaken;
-            existingBook.AuthorId = bookUpdatingDto.AuthorId;
+            existingBook.Title = updateBook.Title;
+            existingBook.Genre = updateBook.Genre;
+            existingBook.Description = updateBook.Description;
+            existingBook.ISBN = updateBook.ISBN;
+            existingBook.IsTaken = updateBook.IsTaken;
+            existingBook.AuthorId = updateBook.AuthorId;
 
             await _context.SaveChangesAsync();
 

@@ -14,7 +14,7 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> CreateAsync(Book book);
 
-        Task<Book?> UpdateAsync(int id, byte[] cover);
+        Task<Book?> UpdateAsync(int id, Book book);
 
         Task<Book?> DeleteAsync(int id);
 
@@ -26,6 +26,6 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> ReturnBook(string bookTitle, string userId);
 
-        Task<Book?> AddCover(string bookTitle, IFormFile file);
+        Task<Book?> AddCover(string bookTitle, byte[] cover);
     }
 }

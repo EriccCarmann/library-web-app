@@ -75,7 +75,13 @@ namespace LibraryWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult?> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
-            var updateAuthor = await _authorRepository.UpdateAsync(id, authorUpdateDto);
+            var updateAuthor = await _authorRepository.UpdateAsync(id, new Author
+            {
+                FirstName = authorUpdateDto.FirstName,
+                LastName = authorUpdateDto.LastName,
+                DateOfBirth = authorUpdateDto.DateOfBirth,
+                Country = authorUpdateDto.Country
+            });
 
             if (updateAuthor == null) 
             {

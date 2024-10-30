@@ -73,8 +73,8 @@ namespace LibraryWebApi.Controllers
         [Authorize(Policy = "Admin")]
         [HttpPost("createbook")]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
-         {
-             if (ModelState.IsValid)
+         {          
+            if (ModelState.IsValid)
              {
                 var _book = _mapper.Map<Book>(data);
 
@@ -87,8 +87,8 @@ namespace LibraryWebApi.Controllers
 
                 var _newBook = _mapper.Map<BookReadDto>(_book);
 
-                return CreatedAtAction("CreateBook", new {_book.Id}, _newBook);
-             }
+                return CreatedAtAction("CreateBook", new { _book.Id }, _newBook);
+            }
              return BadRequest();
          }
 
@@ -96,14 +96,22 @@ namespace LibraryWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto) 
         {
-            var updateBook = await _bookRepository.UpdateAsync(id, bookUpdatingDto);
+            var updatedBook = await _bookRepository.UpdateAsync(id, new Book
+            {
+                Title = bookUpdatingDto.Title,
+                Genre = bookUpdatingDto.Genre,
+                Description = bookUpdatingDto.Description,
+                ISBN = bookUpdatingDto.ISBN,
+                IsTaken = bookUpdatingDto.IsTaken,
+                AuthorId = bookUpdatingDto.AuthorId
+            });
 
-            if (updateBook == null) 
+            if (updatedBook == null) 
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<BookReadDto>(updateBook));
+            return Ok(_mapper.Map<BookReadDto>(updatedBook));
         }
 
         [Authorize(Policy = "Admin")]
@@ -174,7 +182,7 @@ namespace LibraryWebApi.Controllers
                 await stream.ReadAsync(imageData, 0, imageData.Length);
             }
 
-            await _bookRepository.AddCover(bookTitle, file);
+            await _bookRepository.AddCover(bookTitle, imageData);
 
             var all = await GetAll(queryObject);
 

@@ -5,15 +5,15 @@ using Library.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Library.Infrastructure.Profiles;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
 using LibraryWebApi.Validators;
+using LibraryWebApi.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+//builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 #region AutoMapper

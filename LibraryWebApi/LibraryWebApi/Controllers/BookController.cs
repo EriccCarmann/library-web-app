@@ -7,7 +7,7 @@ using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
 using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.BookDTOs;
-using Microsoft.EntityFrameworkCore;
+using Library.Domain.Interfaces.UnitOfWork;
 
 namespace LibraryWebApi.Controllers
 {
@@ -17,17 +17,20 @@ namespace LibraryWebApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IBookRepository _bookRepository;
+        private readonly IGenericRepository<Book> _genericRepository;
         private readonly BookValidator _bookValidator;
 
         private readonly UserManager<LibraryUser> _userManager;
 
         public BookController(IMapper mapper, 
-            IBookRepository bookRepository, 
+            IBookRepository bookRepository,
+            IGenericRepository<Book> genericRepository,
             BookValidator bookValidator,
             UserManager<LibraryUser> userManager)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
+            _genericRepository = genericRepository;
             _bookValidator = bookValidator;
             _userManager = userManager;
         }
@@ -36,17 +39,18 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var books = await _bookRepository.GetAllAsync(queryObject);
+            var books = await _genericRepository.GetAllAsync(queryObject);
+
             var _books = _mapper.Map<IEnumerable<Book>>(books);
 
             return Ok(_books);
         }
 
         [Authorize(Policy = "User")]
-        [HttpGet("{id}")]
+        [HttpGet("getbyid")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = await _bookRepository.GetByIdAsync(id);
+            var book = await _genericRepository.GetByIdAsync(id);
 
             if (book == null) 
             { 
@@ -78,26 +82,24 @@ namespace LibraryWebApi.Controllers
              {
                 var _book = _mapper.Map<Book>(data);
 
-                if (!_bookValidator.Validate(_book).IsValid)
-                {
-                    return BadRequest();
-                }
+                if (!_bookValidator.Validate(_book).IsValid) return BadRequest();
 
-                await _bookRepository.CreateAsync(_book);
+                await _genericRepository.CreateAsync(_book);
 
                 var _newBook = _mapper.Map<BookReadDto>(_book);
 
-                return CreatedAtAction("CreateBook", new { _book.Id }, _newBook);
+                return CreatedAtAction("CreateBook", new { _book.Id }, _book);
             }
              return BadRequest();
          }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
+        [HttpPut("updatebook")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto) 
         {
-            var updatedBook = await _bookRepository.UpdateAsync(id, new Book
+            var updatedBook = await _genericRepository.UpdateAsync(id, new Book
             {
+                Id = id,
                 Title = bookUpdatingDto.Title,
                 Genre = bookUpdatingDto.Genre,
                 Description = bookUpdatingDto.Description,
@@ -118,7 +120,7 @@ namespace LibraryWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook([FromRoute] int id) 
         {
-            var existingBook = await _bookRepository.DeleteAsync(id);
+            var existingBook = await _genericRepository.DeleteAsync(id);
 
             if (existingBook == null)
                 return NotFound();

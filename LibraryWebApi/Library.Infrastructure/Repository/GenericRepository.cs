@@ -1,8 +1,9 @@
 ﻿using Library.Domain.Helpers;
+using Library.Domain.Interfaces.UnitOfWork;
 using Library.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Infrastructure.Repository.UnitOfWork
+namespace Library.Infrastructure.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -14,7 +15,7 @@ namespace Library.Infrastructure.Repository.UnitOfWork
             _context = context;
             table = _context.Set<T>();
         }
-        public async Task<List<T>> GetAll(QueryObject query)
+        public async Task<List<T>> GetAllAsync(QueryObject query)
         {
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
@@ -37,6 +38,19 @@ namespace Library.Infrastructure.Repository.UnitOfWork
             return obj;
         }
 
+        public async Task<T?> UpdateAsync(object id, T obj)
+        {
+            var item = await table.FindAsync(id);
+
+            if (item == null) return null;
+
+            _context.Entry(item).CurrentValues.SetValues(obj);
+
+            await _context.SaveChangesAsync();
+
+            return item;
+        }
+
         public async Task<T?> DeleteAsync(object id)
         {
             var item = await table.FindAsync(id);
@@ -44,19 +58,6 @@ namespace Library.Infrastructure.Repository.UnitOfWork
             if (item == null) return null;
 
             table.Remove(item);
-
-            await _context.SaveChangesAsync();
-
-            return item;
-        }
-
-        public async Task<T?> UpdateAsync(object id, T obj)
-        {
-            var item = await table.FindAsync(obj);
-
-            if (item == null) return null;
-
-            _context.Entry(item).CurrentValues.SetValues(obj);
 
             await _context.SaveChangesAsync();
 

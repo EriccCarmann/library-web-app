@@ -13,7 +13,7 @@ using LibraryWebApi.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 #region AutoMapper
@@ -27,6 +27,8 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
+builder.Services.AddScoped<IGenericRepository<Book>, GenericRepository<Book>>();
 #endregion
 
 #region Validation

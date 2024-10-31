@@ -3,7 +3,6 @@ using Library.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
 using Library.Domain.Helpers;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Infrastructure.Repository
 {
@@ -16,90 +15,9 @@ namespace Library.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Book>> GetAllAsync(QueryObject query)
-        {
-
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-
-            return await _context.Book.Skip(skipNumber).Take(query.PageSize).ToListAsync();         
-        }
-
-        public async Task<Book?> GetByIdAsync(int id)
-        {
-            return await _context.Book.FindAsync(id);
-        }
-
         public async Task<Book?> GetByIdISBN(string ISBN)
         {
             return await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
-        }
-
-        public async Task<Author?> FindAuthorByName(string name)
-        {
-            var author = await _context.Author
-                .FirstOrDefaultAsync(a => (a.FirstName.ToLower() + " " + a.LastName.ToLower()).Contains(name));
-
-            if (author == null) 
-            {
-                return null;
-            }
-
-            return author;
-        }
-
-        public async Task<Book?> CreateAsync(Book book)
-        {
-            await _context.Book.AddAsync(book);
-            await _context.SaveChangesAsync();
-            return book;
-        }
-
-        public async Task<Book?> DeleteAsync(int? id)
-        {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (existingBook == null) 
-            {
-                return null;
-            }
-
-            _context.Book.Remove(existingBook);
-            await _context.SaveChangesAsync();
-
-            return existingBook;
-        }
-
-        public async Task<Book?> UpdateAsync(int id, Book updateBook)
-        {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (existingBook == null) 
-            {
-                return null;
-            }
-
-            existingBook.Title = updateBook.Title;
-            existingBook.Genre = updateBook.Genre;
-            existingBook.Description = updateBook.Description;
-            existingBook.ISBN = updateBook.ISBN;
-            existingBook.IsTaken = updateBook.IsTaken;
-            existingBook.AuthorId = updateBook.AuthorId;
-
-            await _context.SaveChangesAsync();
-
-            return existingBook;
-        }
-
-        public async Task<Book?> DeleteAsync(int id)
-        {
-            var book = await _context.Book.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (book == null) return null;
-
-            _context.Book.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return book;
         }
 
         public async Task<Book?> TakeBook(string bookTitle, string userId)

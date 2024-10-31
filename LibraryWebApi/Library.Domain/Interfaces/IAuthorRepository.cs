@@ -3,16 +3,8 @@ using Library.Domain.Helpers;
 
 namespace Library.Domain.Interfaces
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository 
     {
-        Task<List<Author>> GetAllAsync(QueryObject query);
-
-        Task<Author?> GetByIdAsync(int id);
-
-        Task<Author> CreateAsync(Author author);
-
-        Task<Author?> UpdateAsync(int id, Author updateAuthor);
-
-        Task<Author?> DeleteAsync(int id);
+        Task<Author?> FindAuthorByName(string name);
     }
 }

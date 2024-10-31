@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
 using LibraryWebApi.Validators;
 using LibraryWebApi.Profiles;
+using Library.Domain.Interfaces.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +28,10 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IAccountRepository, AccounRepository>();
 builder.Services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
 builder.Services.AddScoped<IGenericRepository<Book>, GenericRepository<Book>>();
+builder.Services.AddScoped<IGenericRepository<LibraryUser>, GenericRepository<LibraryUser>>();
 #endregion
 
 #region Validation

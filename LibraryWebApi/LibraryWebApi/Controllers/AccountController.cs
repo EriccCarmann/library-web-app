@@ -1,11 +1,10 @@
 ﻿using Library.Domain.Entities;
-using Library.Infrastructure.Persistence;
+using Library.Domain.Helpers;
+using Library.Domain.Interfaces;
+using Library.Domain.Interfaces.UnitOfWork;
 using LibraryWebApi.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace LibraryWebApi.Controllers
 {
@@ -13,80 +12,48 @@ namespace LibraryWebApi.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<LibraryUser> _userManager;
-        private readonly SignInManager<LibraryUser> _signInManager;
-        private readonly ApplicationDBContext _context;
-        private UserManager<LibraryUser> userManager;
-        private SignInManager<LibraryUser> signInManager;
-        private ApplicationDBContext? context;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IGenericRepository<LibraryUser> _genericRepository;
 
-        public AccountController(UserManager<LibraryUser> userManager,
-            SignInManager<LibraryUser> signInManager, 
-            ApplicationDBContext context)
+        public AccountController(
+            IAccountRepository accountRepository,
+            IGenericRepository<LibraryUser> genericRepository)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _context = context;
+            _accountRepository = accountRepository;
+            _genericRepository = genericRepository;
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
+        {
+            return Ok(await _genericRepository.GetAllAsync(queryObject));
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
-            try 
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var libraryUser = new LibraryUser
             {
-                if (!ModelState.IsValid) 
-                {
-                    return BadRequest(ModelState);
-                }
+                UserName = registerDto.UserName,
+                Email = registerDto.Email
+            };
 
-                var libraryUser = new LibraryUser
-                {
-                    UserName = registerDto.UserName,
-                    Email = registerDto.Email
-                };
-
-                var createUser = await _userManager.CreateAsync(libraryUser, registerDto.Password);
-
-                if (createUser.Succeeded)
-                {
-                    var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
-
-                    if (roleResult.Succeeded)
-                    {
-                        return Ok(libraryUser);
-                    }
-                    else
-                    {
-                        return StatusCode(500, roleResult.Errors);
-                    }
-                }
-                else 
-                {
-                    return StatusCode(500, createUser.Errors);
-                }
-            } 
-            catch (Exception ex) 
-            {
-                return StatusCode(500, ex);
-            }
+            return Ok(await _accountRepository.Register(libraryUser, registerDto.Password));
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto, SignInManager<LibraryUser> signInManager) 
+        public async Task<IActionResult> Login(LoginDto loginDto) 
         {
             if (!ModelState.IsValid) 
             {
                 return BadRequest();
             }
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
-
-            if (user == null) return Unauthorized("Invalid Username");
-
-            var result = await signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
-
-            if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+            var user = await _accountRepository.Login(loginDto.UserName, loginDto.Password);
 
             return Ok(
                 new ShowNewUserDto 
@@ -97,19 +64,10 @@ namespace LibraryWebApi.Controllers
             );
         }
 
-        [Authorize(Policy = "User")]
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _userManager.Users.ToListAsync();
-
-            return Ok(users);
-        }
-
-        [HttpPost("LogOut")]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _accountRepository.Logout();
             return Ok();
         }
     }

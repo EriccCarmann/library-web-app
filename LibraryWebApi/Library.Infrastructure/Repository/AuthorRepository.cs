@@ -15,6 +15,18 @@ namespace Library.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task<List<Author>> GetAllAsync(QueryObject query)
+        {
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return await _context.Author.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+        }
+
+        public async Task<Author?> GetByIdAsync(int id)
+        {
+            return await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<Author> CreateAsync(Author author)
         {
             await _context.Author.AddAsync(author);
@@ -35,19 +47,7 @@ namespace Library.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return author;
-        }
-
-        public async Task<List<Author>> GetAllAsync(QueryObject query)
-        {
-            var skipNumber = (query.PageNumber - 1) * query.PageSize;
-
-            return await _context.Author.Skip(skipNumber).Take(query.PageSize).ToListAsync();
-        }
-
-        public async Task<Author?> GetByIdAsync(int id)
-        {
-            return await _context.Author.FirstOrDefaultAsync(x => x.Id == id);
-        }
+        }   
 
         public async Task<Author?> UpdateAsync(int id, Author updateAuthor)
         {

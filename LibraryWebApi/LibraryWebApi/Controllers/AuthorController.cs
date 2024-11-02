@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.AuthorDTOs;
-using Library.Domain.Interfaces.UnitOfWork;
 
 namespace LibraryWebApi.Controllers
 {
@@ -16,18 +15,15 @@ namespace LibraryWebApi.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository;
-        private readonly IGenericRepository<Author> _genericRepository;
         private readonly AuthorValidator _authorValidator;
 
         public AuthorController(
             IMapper mapper, 
             IAuthorRepository authorRepository,
-            IGenericRepository<Author> genericRepository,
             AuthorValidator authorValidato) 
         {
             _mapper = mapper;
             _authorRepository = authorRepository;
-            _genericRepository = genericRepository;
             _authorValidator = authorValidato;
         }
 
@@ -35,7 +31,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var authors = await _genericRepository.GetAllAsync(queryObject);
+            var authors = await _authorRepository.GetAllAsync(queryObject);
 
             var _authors = _mapper.Map<IEnumerable<AuthorReadDto>>(authors);
 
@@ -46,7 +42,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult?> GetById([FromRoute] int id)
         {
-            var author = await _genericRepository.GetByIdAsync(id);
+            var author = await _authorRepository.GetByIdAsync(id);
 
             if (author == null)
             {
@@ -69,7 +65,7 @@ namespace LibraryWebApi.Controllers
                     return BadRequest();
                 }
 
-                await _genericRepository.CreateAsync(_author);
+                await _authorRepository.CreateAsync(_author);
 
                 var newAuthor = _mapper.Map<AuthorReadDto>(_author);
 
@@ -82,7 +78,7 @@ namespace LibraryWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult?> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
-            var updateAuthor = await _genericRepository.UpdateAsync(id, new Author
+            var updateAuthor = await _authorRepository.UpdateAsync(id, new Author
             {
                 Id = id,
                 FirstName = authorUpdateDto.FirstName,
@@ -98,7 +94,7 @@ namespace LibraryWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult?> DeleteAuthor([FromRoute] int id)
         {
-            var existingAuthor = await _genericRepository.DeleteAsync(id);
+            var existingAuthor = await _authorRepository.DeleteAsync(id);
 
             if (existingAuthor == null)
             {

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Repository
 {
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorRepository : GenericRepository<Author>, IAuthorRepository
     {
         private readonly ApplicationDBContext _context;
 
-        public AuthorRepository(ApplicationDBContext context) 
+        public AuthorRepository(ApplicationDBContext context) : base(context)
         { 
             _context = context;
         }

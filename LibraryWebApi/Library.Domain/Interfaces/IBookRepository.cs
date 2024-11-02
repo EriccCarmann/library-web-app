@@ -1,10 +1,11 @@
 ﻿using Library.Domain.Helpers;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Library.Domain.Interfaces.UnitOfWork;
 
 namespace Library.Domain.Interfaces
 {
-    public interface IBookRepository
+    public interface IBookRepository : IGenericRepository<Book>
     {
         Task<Book?> GetByIdISBN(string ISBN);
 

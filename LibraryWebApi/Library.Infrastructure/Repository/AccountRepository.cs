@@ -2,19 +2,18 @@
 using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Library.Infrastructure.Repository
 {
-    public class AccounRepository : IAccountRepository
+    public class AccountRepository : IAccountRepository
     {
         private readonly ApplicationDBContext _context;
         private readonly UserManager<LibraryUser> _userManager;
         private SignInManager<LibraryUser> _signInManager;
 
-        public AccounRepository(
+        public AccountRepository(
             ApplicationDBContext context,
             SignInManager<LibraryUser> signInManager,
             UserManager<LibraryUser> userManager)

@@ -6,11 +6,11 @@ using Library.Domain.Helpers;
 
 namespace Library.Infrastructure.Repository
 {
-    public class BookRepository : IBookRepository
+    public class BookRepository : GenericRepository<Book>, IBookRepository
     {
         private readonly ApplicationDBContext _context;
 
-        public BookRepository(ApplicationDBContext context) 
+        public BookRepository(ApplicationDBContext context) : base(context)
         {
             _context = context;
         }

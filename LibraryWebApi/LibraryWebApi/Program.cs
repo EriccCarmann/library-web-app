@@ -11,6 +11,7 @@ using LibraryWebApi;
 using LibraryWebApi.Validators;
 using LibraryWebApi.Profiles;
 using Library.Domain.Interfaces.UnitOfWork;
+using Library.Infrastructure.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +29,10 @@ builder.Services.AddAutoMapper(config =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<IAccountRepository, AccounRepository>();
-builder.Services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
-builder.Services.AddScoped<IGenericRepository<Book>, GenericRepository<Book>>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGenericRepository<LibraryUser>, GenericRepository<LibraryUser>>();
+
 #endregion
 
 #region Validation

@@ -1,7 +1,6 @@
 ﻿using Library.Domain.Entities;
 using Library.Domain.Helpers;
-using Library.Domain.Interfaces;
-using Library.Domain.Interfaces.UnitOfWork;
+using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +11,18 @@ namespace LibraryWebApi.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepository;
-        private readonly IGenericRepository<LibraryUser> _genericRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountController(
-            IAccountRepository accountRepository,
-            IGenericRepository<LibraryUser> genericRepository)
+        public AccountController(IUnitOfWork unitOfWork)
         {
-            _accountRepository = accountRepository;
-            _genericRepository = genericRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [Authorize(Policy = "Admin")]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            return Ok(await _genericRepository.GetAllAsync(queryObject));
+            return Ok(await _unitOfWork.Account.GetAllAsync(queryObject));
         }
 
         [AllowAnonymous]
@@ -42,7 +37,9 @@ namespace LibraryWebApi.Controllers
                 Email = registerDto.Email
             };
 
-            return Ok(await _accountRepository.Register(libraryUser, registerDto.Password));
+            var user = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+
+            return Ok(user);
         }
 
         [HttpPost("login")]
@@ -53,7 +50,7 @@ namespace LibraryWebApi.Controllers
                 return BadRequest();
             }
 
-            var user = await _accountRepository.Login(loginDto.UserName, loginDto.Password);
+            var user = await _unitOfWork.Account.Login(loginDto.UserName, loginDto.Password);
 
             return Ok(
                 new ShowNewUserDto 
@@ -67,7 +64,7 @@ namespace LibraryWebApi.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _accountRepository.Logout();
+            await _unitOfWork.Account.Logout();
             return Ok();
         }
     }

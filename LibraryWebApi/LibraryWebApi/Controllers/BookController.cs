@@ -17,20 +17,17 @@ namespace LibraryWebApi.Controllers
     public class BookController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IBookRepository _bookRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly BookValidator _bookValidator;
 
         private readonly UserManager<LibraryUser> _userManager;
 
         public BookController(IMapper mapper, 
-            IBookRepository bookRepository,
             IUnitOfWork unitOfWork,
             BookValidator bookValidator,
             UserManager<LibraryUser> userManager)
         {
             _mapper = mapper;
-            _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
             _bookValidator = bookValidator;
             _userManager = userManager;
@@ -40,7 +37,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var books = await _bookRepository.GetAllAsync(queryObject);
+            var books = await _unitOfWork.Book.GetAllAsync(queryObject);
 
             var _books = _mapper.Map<IEnumerable<Book>>(books);
 
@@ -51,7 +48,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getbyid")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = await _bookRepository.GetByIdAsync(id);
+            var book = await _unitOfWork.Book.GetByIdAsync(id);
 
             if (book == null) 
             { 
@@ -65,7 +62,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getbyISBN")]
         public async Task<IActionResult> GetByISBN(string ISBN)
         {
-            var book = await _bookRepository.GetByIdISBN(ISBN);
+            var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
 
             if (book == null)
             {
@@ -85,7 +82,7 @@ namespace LibraryWebApi.Controllers
 
                 if (!_bookValidator.Validate(_book).IsValid) return BadRequest();
 
-                await _bookRepository.CreateAsync(_book);
+                await _unitOfWork.Book.CreateAsync(_book);
 
                 var _newBook = _mapper.Map<BookReadDto>(_book);
 
@@ -98,7 +95,7 @@ namespace LibraryWebApi.Controllers
         [HttpPut("updatebook")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto) 
         {
-            var updatedBook = await _bookRepository.UpdateAsync(id, new Book
+            var updatedBook = await _unitOfWork.Book.UpdateAsync(id, new Book
             {
                 Id = id,
                 Title = bookUpdatingDto.Title,
@@ -121,7 +118,7 @@ namespace LibraryWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook([FromRoute] int id) 
         {
-            var existingBook = await _bookRepository.DeleteAsync(id);
+            var existingBook = await _unitOfWork.Book.DeleteAsync(id);
 
             if (existingBook == null)
                 return NotFound();
@@ -137,7 +134,7 @@ namespace LibraryWebApi.Controllers
 
             if (userId == null) return NotFound("userId");
 
-            var takeBook = await _bookRepository.TakeBook(bookName, userId);
+            var takeBook = await _unitOfWork.Book.TakeBook(bookName, userId);
 
             if (takeBook == null) return NotFound("takeBook");
 
@@ -152,7 +149,7 @@ namespace LibraryWebApi.Controllers
 
             if (userId == null) return NotFound();
 
-            var takenBooks = await _bookRepository.GetTakenBooks(userId, query);
+            var takenBooks = await _unitOfWork.Book.GetTakenBooks(userId, query);
 
             if (takenBooks == null) return NotFound();
 
@@ -167,7 +164,7 @@ namespace LibraryWebApi.Controllers
 
             if (userId == null) return NotFound();
 
-            var takenBooks = await _bookRepository.ReturnBook(bookName, userId);
+            var takenBooks = await _unitOfWork.Book.ReturnBook(bookName, userId);
 
             if (takenBooks == null) return NotFound();
 
@@ -185,7 +182,7 @@ namespace LibraryWebApi.Controllers
                 await stream.ReadAsync(imageData, 0, imageData.Length);
             }
 
-            await _bookRepository.AddCover(bookTitle, imageData);
+            await _unitOfWork.Book.AddCover(bookTitle, imageData);
 
             var all = await GetAll(queryObject);
 

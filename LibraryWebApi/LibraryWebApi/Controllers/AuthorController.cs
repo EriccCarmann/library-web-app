@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Library.Domain.Interfaces;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.AuthorDTOs;
+using Library.Infrastructure.UnitOfWork;
 
 namespace LibraryWebApi.Controllers
 {
@@ -14,16 +14,16 @@ namespace LibraryWebApi.Controllers
     public class AuthorController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IAuthorRepository _authorRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly AuthorValidator _authorValidator;
 
         public AuthorController(
-            IMapper mapper, 
-            IAuthorRepository authorRepository,
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
             AuthorValidator authorValidato) 
         {
             _mapper = mapper;
-            _authorRepository = authorRepository;
+            _unitOfWork = unitOfWork;
             _authorValidator = authorValidato;
         }
 
@@ -31,7 +31,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var authors = await _authorRepository.GetAllAsync(queryObject);
+            var authors = await _unitOfWork.Author.GetAllAsync(queryObject);
 
             var _authors = _mapper.Map<IEnumerable<AuthorReadDto>>(authors);
 
@@ -42,7 +42,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult?> GetById([FromRoute] int id)
         {
-            var author = await _authorRepository.GetByIdAsync(id);
+            var author = await _unitOfWork.Author.GetByIdAsync(id);
 
             if (author == null)
             {
@@ -65,7 +65,7 @@ namespace LibraryWebApi.Controllers
                     return BadRequest();
                 }
 
-                await _authorRepository.CreateAsync(_author);
+                await _unitOfWork.Author.CreateAsync(_author);
 
                 var newAuthor = _mapper.Map<AuthorReadDto>(_author);
 
@@ -78,7 +78,7 @@ namespace LibraryWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult?> UpdateAuthor([FromRoute] int id, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
-            var updateAuthor = await _authorRepository.UpdateAsync(id, new Author
+            var updateAuthor = await _unitOfWork.Author.UpdateAsync(id, new Author
             {
                 Id = id,
                 FirstName = authorUpdateDto.FirstName,
@@ -94,7 +94,7 @@ namespace LibraryWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult?> DeleteAuthor([FromRoute] int id)
         {
-            var existingAuthor = await _authorRepository.DeleteAsync(id);
+            var existingAuthor = await _unitOfWork.Author.DeleteAsync(id);
 
             if (existingAuthor == null)
             {
@@ -108,7 +108,7 @@ namespace LibraryWebApi.Controllers
         [HttpGet("findauthorbyname")]
         public async Task<Author?> FindAuthorByName(string name)
         {
-            return await _authorRepository.FindAuthorByName(name);
+            return await _unitOfWork.Author.FindAuthorByName(name);
         }
     }
 }

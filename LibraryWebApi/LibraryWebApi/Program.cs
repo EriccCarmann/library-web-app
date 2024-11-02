@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
 using LibraryWebApi.Validators;
 using LibraryWebApi.Profiles;
-using Library.Domain.Interfaces.UnitOfWork;
 using Library.Infrastructure.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +30,6 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IGenericRepository<LibraryUser>, GenericRepository<LibraryUser>>();
 
 #endregion
 

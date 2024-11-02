@@ -7,15 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using LibraryWebApi.Validators;
 using LibraryWebApi.Controllers;
 using LibraryWebApi.DTOs.BookDTOs;
-using Library.Infrastructure.Repository.UnitOfWork;
+using Library.Infrastructure.UnitOfWork;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class BookControllerTests
     {
         private readonly IMapper _mapper;
-        private readonly IBookRepository _bookRepository;
-        private readonly IGenericRepository<Book> _genericRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly BookValidator _bookValidator;
         private readonly UserManager<LibraryUser> _userManager;
 
@@ -25,11 +24,9 @@ namespace LibraryWebApi.Tests.ControllersTests
         {
             _mapper = A.Fake<IMapper>();
             _bookValidator = A.Fake<BookValidator>();
-            _bookRepository = A.Fake<IBookRepository>();
-            _genericRepository = A.Fake<IGenericRepository<Book>>();
-            _userManager = A.Fake<UserManager<LibraryUser>>();
+            _unitOfWork = A.Fake<IUnitOfWork>();
 
-            _bookController = new BookController(_mapper, _bookRepository, _genericRepository, _bookValidator, _userManager);
+            _bookController = new BookController(_mapper, _unitOfWork, _bookValidator, _userManager);
         }
 
         [Fact]

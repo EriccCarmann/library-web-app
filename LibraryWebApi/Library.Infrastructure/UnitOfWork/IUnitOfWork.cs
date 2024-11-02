@@ -4,8 +4,9 @@ namespace Library.Infrastructure.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        IAuthorRepository AuthorRepository { get; }
-        IBookRepository BookRepository { get; }
+        IAuthorRepository Author { get; }
+        IBookRepository Book { get; }
+        IAccountRepository Account { get; }
 
         Task SaveChangesAsync();
     }

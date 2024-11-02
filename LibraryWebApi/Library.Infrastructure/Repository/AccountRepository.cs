@@ -7,16 +7,16 @@ using System.Security.Claims;
 
 namespace Library.Infrastructure.Repository
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : GenericRepository<LibraryUser>, IAccountRepository
     {
         private readonly ApplicationDBContext _context;
         private readonly UserManager<LibraryUser> _userManager;
-        private SignInManager<LibraryUser> _signInManager;
+        private readonly SignInManager<LibraryUser> _signInManager;
 
         public AccountRepository(
             ApplicationDBContext context,
             SignInManager<LibraryUser> signInManager,
-            UserManager<LibraryUser> userManager)
+            UserManager<LibraryUser> userManager) : base(context)
         {
             _context = context;
             _signInManager = signInManager;

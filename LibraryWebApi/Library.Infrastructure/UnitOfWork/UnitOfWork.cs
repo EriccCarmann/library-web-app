@@ -1,21 +1,31 @@
-﻿using Library.Domain.Interfaces;
+﻿using Library.Domain.Entities;
+using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
 
 namespace Library.Infrastructure.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDBContext _context;
+        private readonly UserManager<LibraryUser> _userManager;
+        private readonly SignInManager<LibraryUser> _signInManager;
 
         private IAuthorRepository _author;
         private IBookRepository _book;
+        private IAccountRepository _account;
 
         private bool _isDisposed;
 
-        public UnitOfWork(ApplicationDBContext context)
+        public UnitOfWork(
+            ApplicationDBContext context,
+            SignInManager<LibraryUser> signInManager,
+            UserManager<LibraryUser> userManager)
         {
-            _context = context;     
+            _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         public async Task SaveChangesAsync()
@@ -23,7 +33,7 @@ namespace Library.Infrastructure.UnitOfWork
             await _context.SaveChangesAsync();
         }
 
-        public IAuthorRepository AuthorRepository
+        public IAuthorRepository Author
         {
             get
             {
@@ -36,7 +46,7 @@ namespace Library.Infrastructure.UnitOfWork
             }
         }
 
-        public IBookRepository BookRepository
+        public IBookRepository Book
         {
             get
             {
@@ -46,6 +56,19 @@ namespace Library.Infrastructure.UnitOfWork
                 }
 
                 return _book;
+            }
+        }
+
+        public IAccountRepository Account
+        {
+            get
+            {
+                if (_account is null)
+                {
+                    _account = new AccountRepository(_context, _signInManager, _userManager);
+                }
+
+                return _account;
             }
         }
 

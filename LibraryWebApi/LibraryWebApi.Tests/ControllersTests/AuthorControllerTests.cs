@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
-using Library.Domain.Interfaces;
-using Library.Domain.Validators;
-using Library.Infrastructure.Controllers;
 using FakeItEasy;
 using Library.Domain.Entities;
 using FluentAssertions;
-using Library.Domain.Entities.AuthorDTOs;
+using LibraryWebApi.Controllers;
+using Library.Infrastructure.UnitOfWork;
+using LibraryWebApi.Validators;
+using LibraryWebApi.DTOs.AuthorDTOs;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class AuthorControllerTests
     {
         private readonly IMapper _mapper;
-        private readonly IAuthorRepository _authorRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly AuthorValidator _authorValidator;
 
         private readonly AuthorController _authorController;
@@ -20,10 +20,10 @@ namespace LibraryWebApi.Tests.ControllersTests
         public AuthorControllerTests()
         {
             _mapper = A.Fake<IMapper>();
-            _authorRepository = A.Fake<IAuthorRepository>();
+            _unitOfWork = A.Fake<IUnitOfWork>();
             _authorValidator = A.Fake<AuthorValidator>();
 
-            _authorController = new AuthorController(_mapper, _authorRepository, _authorValidator);
+            _authorController = new AuthorController(_mapper, _unitOfWork, _authorValidator);
         }
 
         [Fact]

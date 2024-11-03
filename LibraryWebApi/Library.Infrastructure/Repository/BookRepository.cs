@@ -3,6 +3,7 @@ using Library.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
 using Library.Domain.Helpers;
+using Library.Domain.Exceptions;
 
 namespace Library.Infrastructure.Repository
 {
@@ -17,15 +18,29 @@ namespace Library.Infrastructure.Repository
 
         public async Task<Book?> GetByIdISBN(string ISBN)
         {
-            return await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+            var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+
+            if (existingBook == null)
+            {
+                throw new EntityNotFoundException($"Book with ISBN {ISBN} was not found");
+            }
+
+            return existingBook;
         }
 
         public async Task<Book?> TakeBook(string bookTitle, string userId)
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
 
-            if (existingBook == null) return null;
-            if (existingBook.IsTaken == true) return null;
+            if (existingBook == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+
+            if (existingBook.IsTaken == true)
+            {
+                throw new BookTakenException($"Book {bookTitle} was already taken");
+            }
 
             existingBook.IsTaken = true;
             existingBook.UserId = userId;
@@ -48,8 +63,11 @@ namespace Library.Infrastructure.Repository
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle && b.UserId == userId);
 
-            if (existingBook == null) return null;
-
+            if (existingBook == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+            
             existingBook.IsTaken = false;
             existingBook.UserId = null;
             existingBook.TakeDateTime = null;
@@ -66,7 +84,7 @@ namespace Library.Infrastructure.Repository
 
             if (file == null && file.Length <= 0 && existingBook == null)
             {
-                return null;
+                throw new InvalidCoverImageException("Invalid Image File");
             }
 
             existingBook.Cover = file;

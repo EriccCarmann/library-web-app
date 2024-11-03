@@ -1,14 +1,10 @@
-﻿using AutoMapper;
-using Library.Domain.Interfaces;
-using Library.Domain.Entities;
+﻿using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
-using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.BookDTOs;
-using Library.Domain.Interfaces.UnitOfWork;
-using Library.Infrastructure.UnitOfWork;
+using LibraryWebApi.Services;
 
 namespace LibraryWebApi.Controllers
 {
@@ -16,44 +12,31 @@ namespace LibraryWebApi.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly BookValidator _bookValidator;
-
         private readonly UserManager<LibraryUser> _userManager;
+        private readonly BookService _bookService;
 
-        public BookController(IMapper mapper, 
-            IUnitOfWork unitOfWork,
-            BookValidator bookValidator,
-            UserManager<LibraryUser> userManager)
+        public BookController(
+            UserManager<LibraryUser> userManager,
+            BookService bookService)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-            _bookValidator = bookValidator;
             _userManager = userManager;
+            _bookService = bookService;
         }
      
         [Authorize(Policy = "User")]
         [HttpGet("getall")]
-        public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var books = await _unitOfWork.Book.GetAllAsync(queryObject);
+            var books = await _bookService.GetAll(queryObject);
 
-            var _books = _mapper.Map<IEnumerable<Book>>(books);
-
-            return Ok(_books);
+            return Ok(books);
         }
 
         [Authorize(Policy = "User")]
-        [HttpGet("getbyid")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = await _unitOfWork.Book.GetByIdAsync(id);
-
-            if (book == null) 
-            { 
-                return NotFound();
-            }
+            var book = await _bookService.GetById(id);
 
             return Ok(book);
         }
@@ -62,66 +45,34 @@ namespace LibraryWebApi.Controllers
         [HttpGet("getbyISBN")]
         public async Task<IActionResult> GetByISBN(string ISBN)
         {
-            var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
+            var book = await _bookService.GetByISBN(ISBN);
 
             return Ok(book);
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost("createbook")]
+        [HttpPost("{id}")]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
-         {          
-            if (ModelState.IsValid)
-             {
-                var _book = _mapper.Map<Book>(data);
+         {
+            var _newBook = await _bookService.CreateBook(data);
 
-                if (!_bookValidator.Validate(_book).IsValid) return BadRequest();
-
-                await _unitOfWork.Book.CreateAsync(_book);
-
-                var _newBook = _mapper.Map<BookReadDto>(_book);
-
-                return CreatedAtAction("CreateBook", new { _book.Id }, _book);
-            }
-             return BadRequest();
+            return CreatedAtAction("CreateBook", _newBook);
          }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("updatebook")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto) 
         {
-            var updatedBook = await _unitOfWork.Book.UpdateAsync(id, new Book
-            {
-                Id = id,
-                Title = bookUpdatingDto.Title,
-                Genre = bookUpdatingDto.Genre,
-                Description = bookUpdatingDto.Description,
-                ISBN = bookUpdatingDto.ISBN,
-                IsTaken = bookUpdatingDto.IsTaken,
-                AuthorId = bookUpdatingDto.AuthorId
-            });
+            var updatedBook = await _bookService.UpdateBook(id, bookUpdatingDto);
 
-            if (updatedBook == null) 
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<BookReadDto>(updatedBook));
+            return Ok(updatedBook);
         }
 
         [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook([FromRoute] int id) 
         {
-            var existingBook = await _unitOfWork.Book.DeleteAsync(id);
-
-            if (existingBook == null)
-                return NotFound();
+            await _bookService.DeleteBook(id);
 
             return NoContent();
         }
@@ -130,13 +81,8 @@ namespace LibraryWebApi.Controllers
         [HttpPut("takebook")]
         public async Task<IActionResult> TakeBook(string bookName)
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (userId == null) return NotFound("userId");
-
-            var takeBook = await _unitOfWork.Book.TakeBook(bookName, userId);
-
-            if (takeBook == null) return NotFound("takeBook");
+            var takeBook = await _bookService.TakeBook(bookName, 
+                _userManager.GetUserId(User).ToString());
 
             return Ok(takeBook);
         }
@@ -145,48 +91,29 @@ namespace LibraryWebApi.Controllers
         [HttpPut("gettakenbooks")]
         public async Task<IActionResult> GetTakenBooks([FromQuery] QueryObject query)
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (userId == null) return NotFound();
-
-            var takenBooks = await _unitOfWork.Book.GetTakenBooks(userId, query);
-
-            if (takenBooks == null) return NotFound();
+            var takenBooks = await _bookService.GetTakenBooks(query,
+                _userManager.GetUserId(User).ToString());
 
             return Ok(takenBooks);
         }
 
         [Authorize(Policy = "User")]
         [HttpPut("returntakenbook")]
-        public async Task<IActionResult> ReurtnBook(string bookName)
+        public async Task<IActionResult> ReturnBook(string bookName)
         {
-            var userId = _userManager.GetUserId(User);
+            var book = await _bookService.ReturnBook(bookName, 
+                _userManager.GetUserId(User).ToString());
 
-            if (userId == null) return NotFound();
-
-            var takenBooks = await _unitOfWork.Book.ReturnBook(bookName, userId);
-
-            if (takenBooks == null) return NotFound();
-
-            return Ok(takenBooks);
+            return Ok(book);
         }
 
         [Authorize(Policy = "Admin")]
         [HttpPut("addcover")]
         public async Task<IActionResult> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
         {
-            byte[] imageData = new byte[file.Length];
+            var result = _bookService.AddCover(bookTitle, file, queryObject);
 
-            using (var stream = file.OpenReadStream())
-            {
-                await stream.ReadAsync(imageData, 0, imageData.Length);
-            }
-
-            await _unitOfWork.Book.AddCover(bookTitle, imageData);
-
-            var all = await GetAll(queryObject);
-
-            return Ok(all);
+            return Ok(result);
         }
     }
 }

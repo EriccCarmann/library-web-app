@@ -11,6 +11,9 @@ using LibraryWebApi;
 using LibraryWebApi.Validators;
 using LibraryWebApi.Profiles;
 using Library.Infrastructure.UnitOfWork;
+using LibraryWebApi.ExceptionHandlerMiddleware;
+using LibraryWebApi.Services;
+using LibraryWebApi.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,18 +28,24 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<BookProfile>();
     config.AddProfile<AuthorProfile>();
 });
+#endregion
 
+#region Repository
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 #endregion
 
 #region Validation
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LibraryUserValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
 #endregion
+
+builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<AccountService>();
 
 #region 
 builder.Services.AddControllers();

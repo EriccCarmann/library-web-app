@@ -1,4 +1,5 @@
-﻿using Library.Domain.Helpers;
+﻿using Library.Domain.Exceptions;
+using Library.Domain.Helpers;
 using Library.Domain.Interfaces.UnitOfWork;
 using Library.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,12 @@ namespace Library.Infrastructure.Repository
 
         public async Task<T?> GetByIdAsync(object id)
         {
-            var item = await table.FindAsync(id);
+            var item = await _context.Set<T>().FindAsync(id);
 
-            if (item == null) return null;
+            if (item is null)
+            {
+                throw new EntityNotFoundException($"{typeof(T).Name} with ID {id} not found.");
+            }
 
             return item;
         }
@@ -42,7 +46,10 @@ namespace Library.Infrastructure.Repository
         {
             var item = await table.FindAsync(id);
 
-            if (item == null) return null;
+            if (item is null)
+            {
+                throw new EntityNotFoundException($"{item} is not found in database.");
+            }
 
             _context.Entry(item).CurrentValues.SetValues(obj);
 
@@ -55,7 +62,10 @@ namespace Library.Infrastructure.Repository
         {
             var item = await table.FindAsync(id);
 
-            if (item == null) return null;
+            if (item is null)
+            {
+                throw new EntityNotFoundException($"{item} is not found in database.");
+            }
 
             table.Remove(item);
 

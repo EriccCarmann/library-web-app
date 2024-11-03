@@ -13,7 +13,6 @@ using LibraryWebApi.Profiles;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
 using LibraryWebApi.Services;
-using LibraryWebApi.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,49 +50,7 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(/*options => 
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Description = "Demo Swagger API v1",
-        Title = "Swagger with IdentityServer4",
-        Version = "1.0.0"
-    });
-
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.OAuth2,
-        Flows = new OpenApiOAuthFlows
-        {
-            Password = new OpenApiOAuthFlow
-            {
-                TokenUrl = new Uri("https://localhost:5233/connect/token"),
-                Scopes = new Dictionary<string, string>
-                {
-                    {"LibraryWebApi", "Web API"}
-                }
-            }
-        }
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "oauth2"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
-}*/);
+builder.Services.AddSwaggerGen();
 #endregion
 
 #region DB and Identity
@@ -171,14 +128,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(/*options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger UI Demo");
-        options.OAuthClientId("client_id_swagger");
-        options.DocExpansion(DocExpansion.List);
-        options.OAuthScopeSeparator(" ");
-        options.OAuthClientSecret("client_secret_swagger");
-    }*/);
+    app.UseSwaggerUI();
 }
 
 app.UseExceptionHandler();

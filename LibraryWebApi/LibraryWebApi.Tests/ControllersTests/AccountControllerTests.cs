@@ -1,27 +1,23 @@
 ﻿using Library.Domain.Entities;
-using Library.Infrastructure.Controllers;
-using Library.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
 using FakeItEasy;
-using Library.Domain.Entities.LibraryUserDTOs;
 using FluentAssertions;
+using LibraryWebApi.Controllers;
+using Library.Infrastructure.UnitOfWork;
+using LibraryWebApi.DTOs.LibraryUserDTOs;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class AccountControllerTests
     {
-        private readonly UserManager<LibraryUser> _userManager;
-        private readonly SignInManager<LibraryUser> _signInManager;
-        private readonly ApplicationDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
         private readonly AccountController _accountController;
 
         public AccountControllerTests()
         {
-            _userManager = A.Fake<UserManager<LibraryUser>>();
-            _signInManager = A.Fake<SignInManager<LibraryUser>>();
+            _unitOfWork = A.Fake<IUnitOfWork>();
 
-            _accountController = new AccountController(_userManager, _signInManager, _context);
+            _accountController = new AccountController(_unitOfWork);
         }
 
         [Fact]
@@ -56,7 +52,7 @@ namespace LibraryWebApi.Tests.ControllersTests
                 Password = "Test"
             };
 
-            var result = _accountController.Login(loginDto, _signInManager);
+            var result = _accountController.Login(loginDto);
 
             result.Should().NotBeNull();
         }

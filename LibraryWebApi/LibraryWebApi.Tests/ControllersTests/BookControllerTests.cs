@@ -8,25 +8,22 @@ using LibraryWebApi.Validators;
 using LibraryWebApi.Controllers;
 using LibraryWebApi.DTOs.BookDTOs;
 using Library.Infrastructure.UnitOfWork;
+using LibraryWebApi.Services;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class BookControllerTests
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly BookValidator _bookValidator;
+        private readonly BookService _bookService;
         private readonly UserManager<LibraryUser> _userManager;
 
         private readonly BookController _bookController;
 
         public BookControllerTests()
         {
-            _mapper = A.Fake<IMapper>();
-            _bookValidator = A.Fake<BookValidator>();
-            _unitOfWork = A.Fake<IUnitOfWork>();
+            _bookService = A.Fake<BookService>();
 
-            _bookController = new BookController(_mapper, _unitOfWork, _bookValidator, _userManager);
+            _bookController = new BookController(_userManager, _bookService);
         }
 
         [Fact]

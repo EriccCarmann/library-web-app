@@ -39,14 +39,45 @@ namespace LibraryWebApi.Services
                 throw new DataValidationException("Input data is invalid");
             }
 
-            var user = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+            if (await _unitOfWork.Account.FindUserByName(libraryUser.UserName) != null)
+            {
+                throw new LoginAlreadyExistsException($"Login {libraryUser.UserName} is already in use!");
+            }
 
-            return user;
+            var resultUser = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+
+            if (!resultUser.Succeeded)
+            {
+                throw new UserCreationException($"User {libraryUser.UserName} was not created");
+            }
+
+            var resultClaim = await _unitOfWork.Account.AddUserClaim(libraryUser);
+
+            if (!resultClaim.Succeeded)
+            {
+                throw new AddClaimException($"User {libraryUser.UserName} was not assigned a claim");
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return libraryUser;
         }
 
         public async Task<ShowNewUserDto> Login(LoginDto loginDto)
         {
-            var user = await _unitOfWork.Account.Login(loginDto.UserName, loginDto.Password);
+            var user = await _unitOfWork.Account.FindUserByName(loginDto.UserName);
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User {loginDto.UserName} is not found in database.");
+            }
+
+            var result = await _unitOfWork.Account.Login(loginDto.UserName, loginDto.Password);
+
+            if (!result.Succeeded)
+            {
+                throw new WrongPasswordException("Wrong password");
+            }
 
             return new ShowNewUserDto
             {

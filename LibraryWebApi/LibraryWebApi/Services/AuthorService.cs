@@ -53,6 +53,8 @@ namespace LibraryWebApi.Services
 
             await _unitOfWork.Author.CreateAsync(_author);
 
+            await _unitOfWork.SaveChangesAsync();
+
             return _mapper.Map<AuthorReadDto>(_author);
         }
 
@@ -71,17 +73,28 @@ namespace LibraryWebApi.Services
                     Country = authorUpdateDto.Country
                 });
 
+            await _unitOfWork.SaveChangesAsync();
+
             return _mapper.Map<AuthorReadDto>(updateAuthor);
         }
 
         public async Task DeleteAuthor([FromRoute] int id)
         {
             await _unitOfWork.Author.DeleteAsync(id);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<Author?> FindAuthorByName(string name)
         {
-            return await _unitOfWork.Author.FindAuthorByName(name);
+            var author = await _unitOfWork.Author.FindAuthorByName(name);
+
+            if (author is null)
+            {
+                throw new EntityNotFoundException($"{name} is not found in database.");
+            }
+
+            return author;
         }
     }
 }

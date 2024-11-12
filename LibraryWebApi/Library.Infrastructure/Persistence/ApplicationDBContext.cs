@@ -170,7 +170,10 @@ namespace Library.Infrastructure.Persistence
             var admin = new LibraryUser
             {
                 Id = "b74ddd14-6340-4840-95c2-db12554843e5",
-                UserName = "Admin"
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@example.com",
+                NormalizedEmail = "ADMIN@EXAMPLE.COM"
             };
 
             PasswordHasher<LibraryUser> ph = new PasswordHasher<LibraryUser>();

@@ -9,10 +9,11 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
 using LibraryWebApi.Validators;
-using LibraryWebApi.Profiles;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
 using LibraryWebApi.Services;
+using LibraryWebApi.Profiles.BookProfiles;
+using LibraryWebApi.Profiles.AuthorProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +25,10 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddAutoMapper(config =>
 {
-    config.AddProfile<BookProfile>();
-    config.AddProfile<AuthorProfile>();
+    config.AddProfile<BookCreateProfile>();
+    config.AddProfile<BookReadProfile>();
+    config.AddProfile<AuthorCreateProfile>();
+    config.AddProfile<AuthorReadProfile>();
 });
 #endregion
 

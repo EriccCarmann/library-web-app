@@ -6,13 +6,14 @@ using LibraryWebApi.Controllers;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.AuthorDTOs;
+using LibraryWebApi.Services;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class AuthorControllerTests
     {
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly AuthorService _authorService;
         private readonly AuthorValidator _authorValidator;
 
         private readonly AuthorController _authorController;
@@ -20,10 +21,9 @@ namespace LibraryWebApi.Tests.ControllersTests
         public AuthorControllerTests()
         {
             _mapper = A.Fake<IMapper>();
-            _unitOfWork = A.Fake<IUnitOfWork>();
-            _authorValidator = A.Fake<AuthorValidator>();
+            _authorService = A.Fake<AuthorService>();
 
-            _authorController = new AuthorController(_mapper, _unitOfWork, _authorValidator);
+            _authorController = new AuthorController(_mapper, _authorService);
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace LibraryWebApi.Tests.ControllersTests
                 Country = "NewTest"
             };
 
-            var result = _authorController.UpdateAuthor(author.Id, authorUpdate);
+            var result = _authorController.UpdateAuthor(author.Id.ToString(), authorUpdate);
 
         }
     }

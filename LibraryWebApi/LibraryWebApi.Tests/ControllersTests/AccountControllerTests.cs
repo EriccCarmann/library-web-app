@@ -4,20 +4,21 @@ using FluentAssertions;
 using LibraryWebApi.Controllers;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.DTOs.LibraryUserDTOs;
+using LibraryWebApi.Services;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {
     public class AccountControllerTests
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly AccountService _accountService;
 
         private readonly AccountController _accountController;
 
         public AccountControllerTests()
         {
-            _unitOfWork = A.Fake<IUnitOfWork>();
+            _accountService = A.Fake<AccountService>();
 
-            _accountController = new AccountController(_unitOfWork);
+            _accountController = new AccountController(_accountService);
         }
 
         [Fact]

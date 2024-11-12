@@ -60,7 +60,7 @@ namespace LibraryWebApi.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpDelete("deleteauthor")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult?> DeleteAuthor([FromRoute] int id)
         {
             await _authorService.DeleteAuthor(id);

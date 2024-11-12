@@ -1,5 +1,4 @@
 ﻿using Library.Domain.Entities;
-using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -24,44 +23,26 @@ namespace Library.Infrastructure.Repository
             _userManager = userManager;
         }
 
-        public async Task<LibraryUser?> Register(LibraryUser libraryUser, string password)
+        public async Task<LibraryUser?> FindUserByName(string name)
         {
-            var newUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == libraryUser.UserName.ToLower());
-
-            if (newUser != null)
-            {
-                throw new LoginAlreadyExistsException($"Login {libraryUser.UserName} is already in use!");
-            }
-
-            var createUser = await _userManager.CreateAsync(libraryUser, password);
-
-            if (!createUser.Succeeded)
-            {
-                throw new UserCreationException($"User {libraryUser.UserName} was not created");
-            }
-
-            var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
-
-            return libraryUser;
+            return await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == name.ToLower());
         }
 
-        public async Task<LibraryUser?> Login(string name, string password) 
+        public async Task<IdentityResult?> Register(LibraryUser libraryUser, string password)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == name.ToLower());
+            return await _userManager.CreateAsync(libraryUser, password);
+        }
 
-            if (user is null)
-            {
-                throw new EntityNotFoundException($"User {name} is not found in database.");
-            }
+        public async Task<IdentityResult?> AddUserClaim(LibraryUser libraryUser)
+        {
+            return await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
+        }
 
+        public async Task<SignInResult?> Login(string name, string password) 
+        {
             var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
 
-            if (!result.Succeeded)
-            {
-                throw new WrongPasswordException("Wrong password");
-            }
-
-            return user;
+            return result;
         }
 
         public async Task<Task> Logout()

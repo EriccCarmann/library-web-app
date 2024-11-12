@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using FluentValidation;
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.DTOs.BookDTOs;
 using LibraryWebApi.Validators;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryWebApi.Services
@@ -47,6 +44,11 @@ namespace LibraryWebApi.Services
         {
             var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
 
+            if (book == null)
+            {
+                throw new EntityNotFoundException($"Book with ISBN {ISBN} was not found");
+            }
+
             return book;
         }
         public async Task<BookReadDto> CreateBook(BookCreateDto data)
@@ -59,6 +61,8 @@ namespace LibraryWebApi.Services
             }
 
             await _unitOfWork.Book.CreateAsync(_book);
+
+            await _unitOfWork.SaveChangesAsync();
 
             var _newBook = _mapper.Map<BookReadDto>(_book);
 
@@ -85,6 +89,8 @@ namespace LibraryWebApi.Services
 
             var updatedBook = await _unitOfWork.Book.UpdateAsync(id, newBook);
 
+            await _unitOfWork.SaveChangesAsync();
+
             var book = _mapper.Map<BookReadDto>(updatedBook);
 
             return book;
@@ -93,11 +99,25 @@ namespace LibraryWebApi.Services
         public async Task DeleteBook([FromRoute] int id)
         {
             await _unitOfWork.Book.DeleteAsync(id);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<Book> TakeBook(string bookName, string userId)
+        public async Task<Book> TakeBook(string bookTitle, string userId)
         {
-            var takeBook = await _unitOfWork.Book.TakeBook(bookName, userId);
+            var takeBook = await _unitOfWork.Book.TakeBook(bookTitle, userId);
+
+            if (takeBook == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+
+            if (takeBook.IsTaken == true)
+            {
+                throw new BookTakenException($"Book {bookTitle} was already taken");
+            }
+
+            await _unitOfWork.SaveChangesAsync();
 
             return takeBook;
         }
@@ -109,15 +129,27 @@ namespace LibraryWebApi.Services
             return takenBooks;
         }
 
-        public async Task<Book> ReturnBook(string userId, string bookName)
+        public async Task<Book> ReturnBook(string userId, string bookTitle)
         {
-            var book = await _unitOfWork.Book.ReturnBook(bookName, userId);
+            var book = await _unitOfWork.Book.ReturnBook(bookTitle, userId);
+
+            if (book == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+
+            await _unitOfWork.SaveChangesAsync();
 
             return book;
         }
 
         public async Task<IEnumerable<Book>> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
         {
+            if (file == null && file.Length <= 0)
+            {
+                throw new InvalidCoverImageException("Invalid Image File");
+            }
+
             byte[] imageData = new byte[file.Length];
 
             using (var stream = file.OpenReadStream())
@@ -125,7 +157,14 @@ namespace LibraryWebApi.Services
                 await stream.ReadAsync(imageData, 0, imageData.Length);
             }
 
-            await _unitOfWork.Book.AddCover(bookTitle, imageData);
+            var result = await _unitOfWork.Book.AddCover(bookTitle, imageData);
+
+            if (result == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+
+            await _unitOfWork.SaveChangesAsync();
 
             var all = await GetAll(queryObject);
 

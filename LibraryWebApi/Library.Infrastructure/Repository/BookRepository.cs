@@ -58,10 +58,7 @@ namespace Library.Infrastructure.Repository
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
 
-            if (file == null || file.Length <= 0 || existingBook == null)
-            {
-                throw new InvalidCoverImageException("Invalid Image File");
-            }
+            if (existingBook == null) return null;
 
             existingBook.Cover = file;
 

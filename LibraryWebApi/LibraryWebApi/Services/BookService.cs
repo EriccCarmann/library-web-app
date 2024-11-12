@@ -145,6 +145,11 @@ namespace LibraryWebApi.Services
 
         public async Task<IEnumerable<Book>> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
         {
+            if (file == null && file.Length <= 0)
+            {
+                throw new InvalidCoverImageException("Invalid Image File");
+            }
+
             byte[] imageData = new byte[file.Length];
 
             using (var stream = file.OpenReadStream())
@@ -152,7 +157,12 @@ namespace LibraryWebApi.Services
                 await stream.ReadAsync(imageData, 0, imageData.Length);
             }
 
-            await _unitOfWork.Book.AddCover(bookTitle, imageData);
+            var result = await _unitOfWork.Book.AddCover(bookTitle, imageData);
+
+            if (result == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
 
             await _unitOfWork.SaveChangesAsync();
 

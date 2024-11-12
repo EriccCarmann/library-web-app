@@ -111,7 +111,7 @@ namespace LibraryWebApi.Controllers
         [HttpPut("addcover")]
         public async Task<IActionResult> AddCover(string bookTitle, IFormFile file, [FromQuery] QueryObject queryObject)
         {
-            var result = _bookService.AddCover(bookTitle, file, queryObject);
+            var result = await _bookService.AddCover(bookTitle, file, queryObject);
 
             return Ok(result);
         }

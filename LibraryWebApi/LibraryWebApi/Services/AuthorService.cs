@@ -87,7 +87,14 @@ namespace LibraryWebApi.Services
 
         public async Task<Author?> FindAuthorByName(string name)
         {
-            return await _unitOfWork.Author.FindAuthorByName(name);
+            var author = await _unitOfWork.Author.FindAuthorByName(name);
+
+            if (author is null)
+            {
+                throw new EntityNotFoundException($"{name} is not found in database.");
+            }
+
+            return author;
         }
     }
 }

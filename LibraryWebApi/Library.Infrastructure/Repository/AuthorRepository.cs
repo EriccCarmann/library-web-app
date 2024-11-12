@@ -20,11 +20,6 @@ namespace Library.Infrastructure.Repository
             var author = await _context.Author
                 .FirstOrDefaultAsync(a => (a.FirstName.ToLower() + " " + a.LastName.ToLower()).Contains(name));
 
-            if (author is null)
-            {
-                throw new EntityNotFoundException($"{name} is not found in database.");
-            }
-
             return author;
         }
     }

@@ -44,6 +44,11 @@ namespace LibraryWebApi.Services
         {
             var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
 
+            if (book == null)
+            {
+                throw new EntityNotFoundException($"Book with ISBN {ISBN} was not found");
+            }
+
             return book;
         }
         public async Task<BookReadDto> CreateBook(BookCreateDto data)
@@ -98,9 +103,19 @@ namespace LibraryWebApi.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<Book> TakeBook(string bookName, string userId)
+        public async Task<Book> TakeBook(string bookTitle, string userId)
         {
-            var takeBook = await _unitOfWork.Book.TakeBook(bookName, userId);
+            var takeBook = await _unitOfWork.Book.TakeBook(bookTitle, userId);
+
+            if (takeBook == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
+
+            if (takeBook.IsTaken == true)
+            {
+                throw new BookTakenException($"Book {bookTitle} was already taken");
+            }
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -114,9 +129,14 @@ namespace LibraryWebApi.Services
             return takenBooks;
         }
 
-        public async Task<Book> ReturnBook(string userId, string bookName)
+        public async Task<Book> ReturnBook(string userId, string bookTitle)
         {
-            var book = await _unitOfWork.Book.ReturnBook(bookName, userId);
+            var book = await _unitOfWork.Book.ReturnBook(bookTitle, userId);
+
+            if (book == null)
+            {
+                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+            }
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -134,9 +154,9 @@ namespace LibraryWebApi.Services
 
             await _unitOfWork.Book.AddCover(bookTitle, imageData);
 
-            var all = await GetAll(queryObject);
-
             await _unitOfWork.SaveChangesAsync();
+
+            var all = await GetAll(queryObject);
 
             return all;
         }

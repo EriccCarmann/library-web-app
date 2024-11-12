@@ -18,36 +18,21 @@ namespace Library.Infrastructure.Repository
 
         public async Task<Book?> GetByIdISBN(string ISBN)
         {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+            var book = await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
 
-            if (existingBook == null)
-            {
-                throw new EntityNotFoundException($"Book with ISBN {ISBN} was not found");
-            }
-
-            return existingBook;
+            return book;
         }
 
         public async Task<Book?> TakeBook(string bookTitle, string userId)
         {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
+            var book = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
 
-            if (existingBook == null)
-            {
-                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
-            }
+            book.IsTaken = true;
+            book.UserId = userId;
+            book.TakeDateTime = DateTime.UtcNow;
+            book.ReturnDateTime = DateTime.UtcNow.AddDays(7);
 
-            if (existingBook.IsTaken == true)
-            {
-                throw new BookTakenException($"Book {bookTitle} was already taken");
-            }
-
-            existingBook.IsTaken = true;
-            existingBook.UserId = userId;
-            existingBook.TakeDateTime = DateTime.UtcNow;
-            existingBook.ReturnDateTime = DateTime.UtcNow.AddDays(7);
-
-            return existingBook;
+            return book;
         }
 
         public async Task<List<Book>?> GetTakenBooks(string userId, QueryObject query)
@@ -59,26 +44,21 @@ namespace Library.Infrastructure.Repository
 
         public async Task<Book?> ReturnBook(string bookTitle, string userId)
         {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle && b.UserId == userId);
+            var book = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle && b.UserId == userId);
 
-            if (existingBook == null)
-            {
-                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
-            }
-            
-            existingBook.IsTaken = false;
-            existingBook.UserId = null;
-            existingBook.TakeDateTime = null;
-            existingBook.ReturnDateTime = null;
+            book.IsTaken = false;
+            book.UserId = null;
+            book.TakeDateTime = null;
+            book.ReturnDateTime = null;
 
-            return existingBook;
+            return book;
         }
 
         public async Task<Book?> AddCover(string bookTitle, byte[] file)
         {
             var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
 
-            if (file == null && file.Length <= 0 && existingBook == null)
+            if (file == null || file.Length <= 0 || existingBook == null)
             {
                 throw new InvalidCoverImageException("Invalid Image File");
             }
@@ -86,7 +66,6 @@ namespace Library.Infrastructure.Repository
             existingBook.Cover = file;
 
             return existingBook;
-
         }
     }
 }

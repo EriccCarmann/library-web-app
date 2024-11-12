@@ -187,7 +187,9 @@ namespace Library.Infrastructure.Migrations
                     AuthorId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsTaken = table.Column<bool>(type: "bit", nullable: true),
-                    TakeDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    TakeDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReturnDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Cover = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -209,14 +211,14 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1984c4c8-702e-4405-9df2-58c693ef6b42", null, "Admin", "ADMIN" },
-                    { "ec5b3928-81e1-4a8f-8303-5581523e1f8b", null, "User", "USER" }
+                    { "a8a67eaf-27eb-4375-a610-74fd76693277", null, "User", "USER" },
+                    { "c1ddc1e6-a931-48f5-845c-3e5072e4283c", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "a47a307a-e15b-437c-913a-6a265939c99c", null, false, false, null, null, null, "AQAAAAIAAYagAAAAEAh5nQE2mojGs/Dt4WVT4kla6JIMNIeCvBNG9xmsePQLHoy3bB2Ov8Y6Ll/yEaV3tA==", null, false, "3782421c-4ba5-43e6-84ae-22c54adb8702", false, "Admin" });
+                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "44b51e23-46ec-475c-b5a9-f30e5d3e6637", null, false, false, null, null, null, "AQAAAAIAAYagAAAAEIi4uQGV86m8DaU+BBw+0ZcQmKd8frMVU/CjyLS6VQ1nvqGTS7OUvO6plQLyO8H/1Q==", null, false, "54f34e78-6eea-42e3-8f2f-c30068b29df4", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Author",
@@ -235,18 +237,18 @@ namespace Library.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Book",
-                columns: new[] { "Id", "AuthorId", "Description", "Genre", "ISBN", "IsTaken", "TakeDateTime", "Title", "UserId" },
+                columns: new[] { "Id", "AuthorId", "Cover", "Description", "Genre", "ISBN", "IsTaken", "ReturnDateTime", "TakeDateTime", "Title", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 1, "The Hobbit, or There and Back Again is a children's fantasy novel by the English author J. R. R. Tolkien. It was published in 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction.", "Adventure", "1-34-678910-2", false, null, "Hobbit", null },
-                    { 2, 1, "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.", "Adventure", "2-33-679910-2", false, null, "Lord Of The Rings", null },
-                    { 3, 1, "The Silmarillion is a book consisting of a collection of myths and stories in varying styles by the English writer J. R. R. Tolkien. It was edited, partly written, and published posthumously by his son Christopher Tolkien in 1977, assisted by Guy Gavriel Kay, who became a fantasy author.", "Adventure", "2-33-679910-2", false, null, "The Silmarillion", null },
-                    { 4, 2, "Small Gods is the thirteenth of Terry Pratchett's Discworld novels, published in 1992. It tells the origin of the god Om, and his relations with his prophet, the reformer Brutha. In the process, it satirises philosophy, religious institutions, people, and practices, and the role of religion in political life.", "Fantasy", "0-06-017750-0", false, null, "Small Gods", null },
-                    { 5, 2, "Guards! Guards! is a fantasy novel by British writer Terry Pratchett, the eighth in the Discworld series, first published in 1989. It is the first novel about the Ankh-Morpork City Watch. The first Discworld point-and-click adventure game borrowed heavily from the plot of Guards! Guards!", "Fantasy", "3-33-679910-2", false, null, "Guards! Guards!", null },
-                    { 6, 2, "Night Watch is a fantasy novel by British writer Terry Pratchett, the 29th book in his Discworld series, and the sixth starring the City Watch, published in 2002. The protagonist of the novel is Sir Samuel Vimes, commander of the Ankh-Morpork City Watch.", "Fantasy", "3-73-674510-2", false, null, "Night Watch", null },
-                    { 7, 3, "Norse Mythology is a 2017 book by Neil Gaiman, which retells several stories from Norse mythology. In the introduction, Gaiman describes where his fondness for the source material comes from. The book received positive reviews from critics.", "Fantasy", "4-33-679910-2", false, null, "Norse Mythology", null },
-                    { 8, 3, "The Graveyard Book is a young adult novel written by the English author Neil Gaiman, simultaneously published in Britain and America in 2008. The Graveyard Book traces the story of the boy Nobody \"Bod\" Owens, who is adopted and reared by the supernatural occupants of a graveyard after his family is brutally murdered.", "Horror fiction", "4-53-679910-2", false, null, "The ​Graveyard Book", null },
-                    { 9, 3, "Stardust is a 1999 fantasy novel by British writer Neil Gaiman, usually published with illustrations by Charles Vess.", "Adventure", "4-39-674510-2", false, null, "Stardust", null }
+                    { 1, 1, null, "The Hobbit, or There and Back Again is a children's fantasy novel by the English author J. R. R. Tolkien. It was published in 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction.", "Adventure", "1-34-678910-2", false, null, null, "Hobbit", null },
+                    { 2, 1, null, "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.", "Adventure", "2-33-679910-2", false, null, null, "Lord Of The Rings", null },
+                    { 3, 1, null, "The Silmarillion is a book consisting of a collection of myths and stories in varying styles by the English writer J. R. R. Tolkien. It was edited, partly written, and published posthumously by his son Christopher Tolkien in 1977, assisted by Guy Gavriel Kay, who became a fantasy author.", "Adventure", "2-33-679910-2", false, null, null, "The Silmarillion", null },
+                    { 4, 2, null, "Small Gods is the thirteenth of Terry Pratchett's Discworld novels, published in 1992. It tells the origin of the god Om, and his relations with his prophet, the reformer Brutha. In the process, it satirises philosophy, religious institutions, people, and practices, and the role of religion in political life.", "Fantasy", "0-06-017750-0", false, null, null, "Small Gods", null },
+                    { 5, 2, null, "Guards! Guards! is a fantasy novel by British writer Terry Pratchett, the eighth in the Discworld series, first published in 1989. It is the first novel about the Ankh-Morpork City Watch. The first Discworld point-and-click adventure game borrowed heavily from the plot of Guards! Guards!", "Fantasy", "3-33-679910-2", false, null, null, "Guards! Guards!", null },
+                    { 6, 2, null, "Night Watch is a fantasy novel by British writer Terry Pratchett, the 29th book in his Discworld series, and the sixth starring the City Watch, published in 2002. The protagonist of the novel is Sir Samuel Vimes, commander of the Ankh-Morpork City Watch.", "Fantasy", "3-73-674510-2", false, null, null, "Night Watch", null },
+                    { 7, 3, null, "Norse Mythology is a 2017 book by Neil Gaiman, which retells several stories from Norse mythology. In the introduction, Gaiman describes where his fondness for the source material comes from. The book received positive reviews from critics.", "Fantasy", "4-33-679910-2", false, null, null, "Norse Mythology", null },
+                    { 8, 3, null, "The Graveyard Book is a young adult novel written by the English author Neil Gaiman, simultaneously published in Britain and America in 2008. The Graveyard Book traces the story of the boy Nobody \"Bod\" Owens, who is adopted and reared by the supernatural occupants of a graveyard after his family is brutally murdered.", "Horror fiction", "4-53-679910-2", false, null, null, "The ​Graveyard Book", null },
+                    { 9, 3, null, "Stardust is a 1999 fantasy novel by British writer Neil Gaiman, usually published with illustrations by Charles Vess.", "Adventure", "4-39-674510-2", false, null, null, "Stardust", null }
                 });
 
             migrationBuilder.CreateIndex(

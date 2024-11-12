@@ -41,6 +41,8 @@ namespace LibraryWebApi.Services
 
             var user = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
 
+            await _unitOfWork.SaveChangesAsync();
+
             return user;
         }
 

@@ -47,8 +47,6 @@ namespace Library.Infrastructure.Repository
             existingBook.TakeDateTime = DateTime.UtcNow;
             existingBook.ReturnDateTime = DateTime.UtcNow.AddDays(7);
 
-            await _context.SaveChangesAsync();
-
             return existingBook;
         }
 
@@ -73,8 +71,6 @@ namespace Library.Infrastructure.Repository
             existingBook.TakeDateTime = null;
             existingBook.ReturnDateTime = null;
 
-            await _context.SaveChangesAsync();
-
             return existingBook;
         }
 
@@ -88,8 +84,6 @@ namespace Library.Infrastructure.Repository
             }
 
             existingBook.Cover = file;
-
-            _context.SaveChanges();
 
             return existingBook;
 

@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using FluentValidation;
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.DTOs.BookDTOs;
 using LibraryWebApi.Validators;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryWebApi.Services
@@ -60,6 +57,8 @@ namespace LibraryWebApi.Services
 
             await _unitOfWork.Book.CreateAsync(_book);
 
+            await _unitOfWork.SaveChangesAsync();
+
             var _newBook = _mapper.Map<BookReadDto>(_book);
 
             return _newBook;
@@ -85,6 +84,8 @@ namespace LibraryWebApi.Services
 
             var updatedBook = await _unitOfWork.Book.UpdateAsync(id, newBook);
 
+            await _unitOfWork.SaveChangesAsync();
+
             var book = _mapper.Map<BookReadDto>(updatedBook);
 
             return book;
@@ -93,11 +94,15 @@ namespace LibraryWebApi.Services
         public async Task DeleteBook([FromRoute] int id)
         {
             await _unitOfWork.Book.DeleteAsync(id);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<Book> TakeBook(string bookName, string userId)
         {
             var takeBook = await _unitOfWork.Book.TakeBook(bookName, userId);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return takeBook;
         }
@@ -112,6 +117,8 @@ namespace LibraryWebApi.Services
         public async Task<Book> ReturnBook(string userId, string bookName)
         {
             var book = await _unitOfWork.Book.ReturnBook(bookName, userId);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return book;
         }
@@ -128,6 +135,8 @@ namespace LibraryWebApi.Services
             await _unitOfWork.Book.AddCover(bookTitle, imageData);
 
             var all = await GetAll(queryObject);
+
+            await _unitOfWork.SaveChangesAsync();
 
             return all;
         }

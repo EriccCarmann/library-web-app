@@ -53,6 +53,8 @@ namespace LibraryWebApi.Services
 
             await _unitOfWork.Author.CreateAsync(_author);
 
+            await _unitOfWork.SaveChangesAsync();
+
             return _mapper.Map<AuthorReadDto>(_author);
         }
 
@@ -71,12 +73,16 @@ namespace LibraryWebApi.Services
                     Country = authorUpdateDto.Country
                 });
 
+            await _unitOfWork.SaveChangesAsync();
+
             return _mapper.Map<AuthorReadDto>(updateAuthor);
         }
 
         public async Task DeleteAuthor([FromRoute] int id)
         {
             await _unitOfWork.Author.DeleteAsync(id);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<Author?> FindAuthorByName(string name)

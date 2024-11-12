@@ -38,7 +38,6 @@ namespace Library.Infrastructure.Repository
         public async Task<T?> CreateAsync(T obj)
         {
             await table.AddAsync(obj);
-            await _context.SaveChangesAsync();
             return obj;
         }
 
@@ -53,14 +52,12 @@ namespace Library.Infrastructure.Repository
 
             _context.Entry(item).CurrentValues.SetValues(obj);
 
-            await _context.SaveChangesAsync();
-
             return item;
         }
 
         public async Task<T?> DeleteAsync(object id)
         {
-            var item = await table.FindAsync(id);
+            var item = await _context.Set<T>().FindAsync(id);
 
             if (item is null)
             {
@@ -68,8 +65,6 @@ namespace Library.Infrastructure.Repository
             }
 
             table.Remove(item);
-
-            await _context.SaveChangesAsync();
 
             return item;
         }

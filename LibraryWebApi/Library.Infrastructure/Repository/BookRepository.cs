@@ -3,7 +3,6 @@ using Library.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Library.Infrastructure.Persistence;
 using Library.Domain.Helpers;
-using Library.Domain.Exceptions;
 
 namespace Library.Infrastructure.Repository
 {

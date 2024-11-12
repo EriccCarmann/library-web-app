@@ -2,7 +2,6 @@
 using Library.Domain.Interfaces;
 using Library.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Library.Domain.Exceptions;
 
 namespace Library.Infrastructure.Repository
 {

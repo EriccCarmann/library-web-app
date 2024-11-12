@@ -1,5 +1,4 @@
 ﻿using Library.Domain.Entities;
-using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -29,24 +28,21 @@ namespace Library.Infrastructure.Repository
             return await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == name.ToLower());
         }
 
-        public async Task<LibraryUser?> Register(LibraryUser libraryUser, string password)
+        public async Task<IdentityResult?> Register(LibraryUser libraryUser, string password)
         {
-            var createUser = await _userManager.CreateAsync(libraryUser, password);
-
-            if (!createUser.Succeeded)
-            {
-                throw new UserCreationException($"User {libraryUser.UserName} was not created");
-            }
-
-            var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
-
-            return libraryUser;
+            return await _userManager.CreateAsync(libraryUser, password);
         }
 
-        public async Task<LibraryUser?> Login(string name, string password) 
+        public async Task<IdentityResult?> AddUserClaim(LibraryUser libraryUser)
         {
-            var user = await _signInManager.PasswordSignInAsync(name, password, false, false);
-            return user;
+            return await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
+        }
+
+        public async Task<SignInResult?> Login(string name, string password) 
+        {
+            var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
+
+            return result;
         }
 
         public async Task<Task> Logout()

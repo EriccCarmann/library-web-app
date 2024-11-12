@@ -44,16 +44,30 @@ namespace LibraryWebApi.Services
                 throw new LoginAlreadyExistsException($"Login {libraryUser.UserName} is already in use!");
             }
 
-            var user = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+            var resultUser = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+
+            if (!resultUser.Succeeded)
+            {
+                throw new UserCreationException($"User {libraryUser.UserName} was not created");
+            }
+
+            var resultClaim = await _unitOfWork.Account.AddUserClaim(libraryUser);
+
+            if (!resultClaim.Succeeded)
+            {
+                throw new AddClaimException($"User {libraryUser.UserName} was not assigned a claim");
+            }
 
             await _unitOfWork.SaveChangesAsync();
 
-            return user;
+            return libraryUser;
         }
 
         public async Task<ShowNewUserDto> Login(LoginDto loginDto)
         {
-            if (await _unitOfWork.Account.FindUserByName(loginDto.UserName) == null)
+            var user = await _unitOfWork.Account.FindUserByName(loginDto.UserName);
+
+            if (user == null)
             {
                 throw new EntityNotFoundException($"User {loginDto.UserName} is not found in database.");
             }
@@ -67,7 +81,8 @@ namespace LibraryWebApi.Services
 
             return new ShowNewUserDto
             {
-                UserName = loginDto.UserName
+                UserName = user.UserName,
+                Email = user.Email
             };
         }
 

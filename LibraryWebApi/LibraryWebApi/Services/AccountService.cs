@@ -44,23 +44,11 @@ namespace LibraryWebApi.Services
                 throw new LoginAlreadyExistsException($"Login {libraryUser.UserName} is already in use!");
             }
 
-            var userResult = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
-
-            if (!userResult.Succeeded)
-            {
-                throw new UserCreationException($"User {libraryUser.UserName} was not created");
-            }
-
-            var claimResult = await _unitOfWork.Account.AddUserClaim(libraryUser, registerDto.Password);
-
-            if (!claimResult.Succeeded)
-            {
-                throw new AddClaimException($"User {libraryUser.UserName} was not assigned a claim");
-            }
+            var user = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
 
             await _unitOfWork.SaveChangesAsync();
 
-            return libraryUser;
+            return user;
         }
 
         public async Task<ShowNewUserDto> Login(LoginDto loginDto)

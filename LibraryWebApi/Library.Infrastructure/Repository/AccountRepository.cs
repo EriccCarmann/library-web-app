@@ -29,34 +29,30 @@ namespace Library.Infrastructure.Repository
             return await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == name.ToLower());
         }
 
-        public async Task<IdentityResult?> Register(LibraryUser libraryUser, string password)
+        public async Task<LibraryUser?> Register(LibraryUser libraryUser, string password)
         {
             var createUser = await _userManager.CreateAsync(libraryUser, password);
 
-            return createUser;
-        }
+            if (!createUser.Succeeded)
+            {
+                throw new UserCreationException($"User {libraryUser.UserName} was not created");
+            }
 
-        public async Task<IdentityResult?> AddUserClaim(LibraryUser libraryUser, string password)
-        {
             var roleResult = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
 
-            return roleResult;
+            return libraryUser;
         }
 
-        public async Task<SignInResult?> Login(string name, string password) 
+        public async Task<LibraryUser?> Login(string name, string password) 
         {
-            return await _signInManager.PasswordSignInAsync(name, password, false, false);
+            var user = await _signInManager.PasswordSignInAsync(name, password, false, false);
+            return user;
         }
 
         public async Task<Task> Logout()
         {
             var result = _signInManager.SignOutAsync();
             return result;
-        }
-
-        Task<IdentityResult?> IAccountRepository.Register(LibraryUser libraryUser, string password)
-        {
-            throw new NotImplementedException();
         }
     }
 }

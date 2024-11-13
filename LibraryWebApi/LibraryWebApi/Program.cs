@@ -8,12 +8,13 @@ using System.Security.Claims;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using LibraryWebApi;
-using LibraryWebApi.Validators;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
 using LibraryWebApi.Services;
-using LibraryWebApi.Profiles.BookProfiles;
-using LibraryWebApi.Profiles.AuthorProfiles;
+using Library.Application.Profiles.BookProfiles;
+using Library.Application.Profiles.AuthorProfiles;
+using Library.Application.Validators;
+using Library.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

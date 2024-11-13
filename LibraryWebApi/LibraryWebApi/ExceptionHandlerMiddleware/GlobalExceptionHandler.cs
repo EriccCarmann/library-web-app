@@ -1,12 +1,7 @@
-﻿using Azure.Identity;
-using IdentityServer4.Validation;
-using Library.Domain.Exceptions;
+﻿using Library.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net;
-using System.Security.Authentication;
 using System.Text.Json;
 
 namespace LibraryWebApi.ExceptionHandlerMiddleware

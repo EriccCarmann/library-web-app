@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
+using Library.Application.Validators;
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
-using Library.Infrastructure.UnitOfWork;
-using LibraryWebApi.DTOs.AuthorDTOs;
-using LibraryWebApi.Validators;
-using Microsoft.AspNetCore.Authorization;
+using Library.Application.DTOs.AuthorDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Library.Domain.Interfaces;
 
 namespace LibraryWebApi.Services
 {

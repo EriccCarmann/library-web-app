@@ -1,6 +1,6 @@
 ﻿using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
-using Library.Domain.Interfaces.UnitOfWork;
+using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

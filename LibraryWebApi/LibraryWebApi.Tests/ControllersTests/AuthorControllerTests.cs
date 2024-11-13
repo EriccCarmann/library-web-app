@@ -3,10 +3,9 @@ using FakeItEasy;
 using Library.Domain.Entities;
 using FluentAssertions;
 using LibraryWebApi.Controllers;
-using Library.Infrastructure.UnitOfWork;
-using LibraryWebApi.Validators;
 using LibraryWebApi.DTOs.AuthorDTOs;
 using LibraryWebApi.Services;
+using Library.Application.Validators;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {

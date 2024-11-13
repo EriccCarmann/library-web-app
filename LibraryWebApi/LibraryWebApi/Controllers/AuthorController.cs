@@ -3,12 +3,10 @@ using Library.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
-using LibraryWebApi.Validators;
-using LibraryWebApi.DTOs.AuthorDTOs;
-using Library.Infrastructure.UnitOfWork;
+using Library.Application.DTOs.AuthorDTOs;
 using LibraryWebApi.Services;
 
-namespace LibraryWebApi.Controllers
+namespace LibrLibraryWebApiary.Controllers
 {
     [Route("/author")]
     [ApiController]

@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using Library.Application.Validators;
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
-using Library.Infrastructure.UnitOfWork;
-using LibraryWebApi.DTOs.BookDTOs;
-using LibraryWebApi.Validators;
+using Library.Application.DTOs.BookDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Library.Domain.Interfaces;
 
-namespace LibraryWebApi.Services
+namespace Library.Application.Services
 {
     public class BookService
     {

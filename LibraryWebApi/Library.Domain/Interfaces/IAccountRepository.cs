@@ -1,5 +1,4 @@
 ﻿using Library.Domain.Entities;
-using Library.Domain.Interfaces.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 
 namespace Library.Domain.Interfaces

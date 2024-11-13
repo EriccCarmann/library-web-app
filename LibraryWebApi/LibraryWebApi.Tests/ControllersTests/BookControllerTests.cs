@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using FluentAssertions;
-using Library.Domain.Interfaces;
+﻿using FluentAssertions;
 using FakeItEasy;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using LibraryWebApi.Validators;
 using LibraryWebApi.Controllers;
 using LibraryWebApi.DTOs.BookDTOs;
-using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.Services;
 
 namespace LibraryWebApi.Tests.ControllersTests

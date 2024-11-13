@@ -1,4 +1,4 @@
-﻿namespace LibraryWebApi.DTOs.AuthorDTOs
+﻿namespace Library.Application.DTOs.AuthorDTOs
 {
     public class AuthorUpdateDto
     {

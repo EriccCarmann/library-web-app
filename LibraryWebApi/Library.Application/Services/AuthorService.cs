@@ -1,99 +1,64 @@
-﻿using AutoMapper;
-using Library.Application.Validators;
-using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+﻿using Library.Domain.Entities;
 using Library.Domain.Helpers;
 using Library.Application.DTOs.AuthorDTOs;
 using Microsoft.AspNetCore.Mvc;
-using Library.Domain.Interfaces;
+using Library.Application.UseCases.AuthorUseCases;
 
 namespace LibraryWebApi.Services
 {
     public class AuthorService
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly AuthorValidator _authorValidator;
+        private readonly GetAllAuthorsUseCase _getAllAuthorsUseCase;
+        private readonly GetAuthorByIdUseCase _getAuthorByIdUseCase;
+        private readonly CreateAuthorUseCase _createAuthorUseCase;
+        private readonly UpdateAuthorUseCase _updateAuthorUseCase;
+        private readonly DeleteAuthorUseCase _deleteAuthorUseCase;
+        private readonly FindAuthorByNameUseCase _findAuthorByNameUseCase;
 
         public AuthorService(
-            IMapper mapper,
-            IUnitOfWork unitOfWork,
-            AuthorValidator authorValidato)
+            GetAllAuthorsUseCase getAllAuthorsUseCase,
+            GetAuthorByIdUseCase getAuthorByIdUseCase,
+            CreateAuthorUseCase createAuthorUseCase,
+            UpdateAuthorUseCase updateAuthorUseCase,
+            DeleteAuthorUseCase deleteAuthorUseCase,
+            FindAuthorByNameUseCase findAuthorByNameUseCase)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-            _authorValidator = authorValidato;
+            _getAllAuthorsUseCase = getAllAuthorsUseCase;
+            _getAuthorByIdUseCase = getAuthorByIdUseCase;
+            _createAuthorUseCase = createAuthorUseCase;
+            _updateAuthorUseCase = updateAuthorUseCase;
+            _deleteAuthorUseCase = deleteAuthorUseCase;
+            _findAuthorByNameUseCase = findAuthorByNameUseCase;
         }
 
         public async Task<IEnumerable<AuthorReadDto>> GetAll([FromQuery] QueryObject queryObject)
         {
-            var authors = await _unitOfWork.Author.GetAllAsync(queryObject);
-
-            var _authors = _mapper.Map<IEnumerable<AuthorReadDto>>(authors);
-
-            return _authors;
+            return await _getAllAuthorsUseCase.GetAll(queryObject);
         }
 
         public async Task<Author> GetById([FromRoute] int id)
         {
-            var author = await _unitOfWork.Author.GetByIdAsync(id);
-
-            return author;
+            return await _getAuthorByIdUseCase.GetById(id);
         }
 
         public async Task<AuthorReadDto> CreateAuthor(AuthorCreateDto author)
         {
-            var _author = _mapper.Map<Author>(author);
-
-            if (!_authorValidator.Validate(_author).IsValid)
-            {
-                throw new DataValidationException("Input data is invalid");
-            }
-
-            await _unitOfWork.Author.CreateAsync(_author);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return _mapper.Map<AuthorReadDto>(_author);
+            return await _createAuthorUseCase.CreateAuthor(author);
         }
 
         public async Task<AuthorReadDto> UpdateAuthor(string name, [FromBody] AuthorUpdateDto authorUpdateDto)
         {
-            var existingAuthor = await _unitOfWork.Author.FindAuthorByName(name);
-
-            var updateAuthor = await _unitOfWork.Author.UpdateAsync(
-                existingAuthor.Id,
-                new Author
-                {
-                    Id = existingAuthor.Id,
-                    FirstName = authorUpdateDto.FirstName,
-                    LastName = authorUpdateDto.LastName,
-                    DateOfBirth = authorUpdateDto.DateOfBirth,
-                    Country = authorUpdateDto.Country
-                });
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return _mapper.Map<AuthorReadDto>(updateAuthor);
+            return await _updateAuthorUseCase.UpdateAuthor(name, authorUpdateDto);
         }
 
         public async Task DeleteAuthor([FromRoute] int id)
         {
-            await _unitOfWork.Author.DeleteAsync(id);
-
-            await _unitOfWork.SaveChangesAsync();
+            await _deleteAuthorUseCase.DeleteAuthor(id);
         }
 
         public async Task<Author?> FindAuthorByName(string name)
         {
-            var author = await _unitOfWork.Author.FindAuthorByName(name);
-
-            if (author is null)
-            {
-                throw new EntityNotFoundException($"{name} is not found in database.");
-            }
-
-            return author;
+            return await _findAuthorByNameUseCase.FindAuthorByName(name);
         }
     }
 }

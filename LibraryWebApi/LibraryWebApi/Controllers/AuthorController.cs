@@ -6,7 +6,7 @@ using Library.Domain.Helpers;
 using Library.Application.DTOs.AuthorDTOs;
 using LibraryWebApi.Services;
 
-namespace Library.Application.Controllers
+namespace LibrLibraryWebApiary.Controllers
 {
     [Route("/author")]
     [ApiController]

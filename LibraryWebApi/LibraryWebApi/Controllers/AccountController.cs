@@ -4,7 +4,7 @@ using LibraryWebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Library.Application.Controllers
+namespace LibraryWebApi.Controllers
 {
     [Route("api/account")]
     [ApiController]

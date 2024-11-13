@@ -1,10 +1,10 @@
 ﻿using Library.Domain.Helpers;
-using LibraryWebApi.DTOs.LibraryUserDTOs;
+using Library.Application.DTOs.LibraryUserDTOs;
 using LibraryWebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryWebApi.Controllers
+namespace Library.Application.Controllers
 {
     [Route("api/account")]
     [ApiController]

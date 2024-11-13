@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using LibraryWebApi.DTOs.AuthorDTOs;
+using Library.Application.DTOs.AuthorDTOs;
 
 namespace LibraryWebApi.Profiles.AuthorProfiles
 {

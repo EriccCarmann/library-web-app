@@ -1,4 +1,4 @@
-﻿namespace LibraryWebApi.DTOs.LibraryUserDTOs
+﻿namespace Library.Application.DTOs.LibraryUserDTOs
 {
     public class ShowNewUserDto
     {

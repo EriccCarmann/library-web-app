@@ -1,9 +1,9 @@
-﻿using Library.Domain.Entities;
+﻿using Library.Application.Validators;
+using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
 using Library.Infrastructure.UnitOfWork;
-using LibraryWebApi.DTOs.LibraryUserDTOs;
-using LibraryWebApi.Validators;
+using Library.Application.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryWebApi.Services

@@ -2,7 +2,6 @@
 using FakeItEasy;
 using FluentAssertions;
 using LibraryWebApi.Controllers;
-using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.DTOs.LibraryUserDTOs;
 using LibraryWebApi.Services;
 

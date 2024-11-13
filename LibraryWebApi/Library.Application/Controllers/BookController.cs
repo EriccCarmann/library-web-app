@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
-using LibraryWebApi.DTOs.BookDTOs;
-using LibraryWebApi.Services;
+using Library.Application.DTOs.BookDTOs;
+using Library.Application.Services;
 
-namespace LibraryWebApi.Controllers
+namespace Library.Application.Controllers
 {
     [Route("/book")]
     [ApiController]

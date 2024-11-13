@@ -1,6 +1,6 @@
 ﻿using Library.Domain.Interfaces;
 
-namespace Library.Infrastructure.UnitOfWork
+namespace Library.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

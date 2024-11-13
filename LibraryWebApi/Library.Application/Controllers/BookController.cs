@@ -5,6 +5,7 @@ using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Library.Application.DTOs.BookDTOs;
 using Library.Application.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Application.Controllers
 {

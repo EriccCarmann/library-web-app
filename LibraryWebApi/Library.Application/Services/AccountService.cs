@@ -2,9 +2,9 @@
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
-using Library.Infrastructure.UnitOfWork;
 using Library.Application.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Library.Domain.Interfaces;
 
 namespace LibraryWebApi.Services
 {

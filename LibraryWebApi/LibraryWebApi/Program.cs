@@ -11,9 +11,10 @@ using LibraryWebApi;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
 using LibraryWebApi.Services;
-using LibraryWebApi.Profiles.BookProfiles;
-using LibraryWebApi.Profiles.AuthorProfiles;
+using Library.Application.Profiles.BookProfiles;
+using Library.Application.Profiles.AuthorProfiles;
 using Library.Application.Validators;
+using Library.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

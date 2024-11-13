@@ -2,7 +2,7 @@
 using Library.Domain.Entities;
 using Library.Application.DTOs.BookDTOs;
 
-namespace LibraryWebApi.Profiles.BookProfiles
+namespace Library.Application.Profiles.BookProfiles
 {
     public class BookCreateProfile : Profile
     {

@@ -1,6 +1,6 @@
 ﻿using Library.Domain.Helpers;
 
-namespace Library.Domain.Interfaces.UnitOfWork
+namespace Library.Domain.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {

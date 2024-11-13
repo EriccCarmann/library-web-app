@@ -3,9 +3,10 @@ using Library.Application.Validators;
 using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Helpers;
-using Library.Infrastructure.UnitOfWork;
 using Library.Application.DTOs.BookDTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Library.Domain.Interfaces;
 
 namespace Library.Application.Services
 {

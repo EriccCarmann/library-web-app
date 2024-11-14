@@ -11,6 +11,7 @@ namespace Library.Application.UseCases.BookUseCases
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly BookValidator _bookValidator;
 
         public CreateBookUseCase(IMapper mapper,
             IUnitOfWork unitOfWork)

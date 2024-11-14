@@ -3,8 +3,8 @@ using FakeItEasy;
 using Library.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using LibraryWebApi.Controllers;
-using LibraryWebApi.DTOs.BookDTOs;
-using LibraryWebApi.Services;
+using Library.Application.Services;
+using Library.Application.DTOs.BookDTOs;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {

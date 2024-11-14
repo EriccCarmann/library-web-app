@@ -18,8 +18,10 @@ using Library.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Exceptions
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+#endregion
 
 #region AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -46,11 +48,13 @@ builder.Services.AddValidatorsFromAssemblyContaining<LibraryUserValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
 #endregion
 
+#region Services
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<AuthorService>();
 builder.Services.AddScoped<AccountService>();
+#endregion
 
-#region 
+#region API
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

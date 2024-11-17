@@ -25,7 +25,6 @@ using Library.Infrastructure.TokenServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();
 #region Exceptions
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -162,7 +161,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IGenerateToken, GenerateToken>();
-
 
 builder.Services.AddHttpContextAccessor();
 #endregion

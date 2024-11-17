@@ -9,20 +9,13 @@ namespace Library.Application.UseCases.AccountUseCases
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenerateToken _generateToken;
-        private readonly IGenerateRefreshToken _generateRefreshToken;
-
-        private readonly IHttpContextAccessor _context;
 
         public LoginUseCase(
             IUnitOfWork unitOfWork, 
-            IGenerateToken generateToken, 
-            IGenerateRefreshToken generateRefreshToken,
-            IHttpContextAccessor context)
+            IGenerateToken generateToken)
         {
             _unitOfWork = unitOfWork;
             _generateToken = generateToken;
-            _generateRefreshToken = generateRefreshToken;
-            _context = context;
         }
 
         public async Task<Tuple<ShowNewUserDto, string>> Login(LoginDto loginDto)
@@ -42,21 +35,6 @@ namespace Library.Application.UseCases.AccountUseCases
             }
 
             string token = await _generateToken.CreateToken(user);
-
-            var refreshToken = _generateRefreshToken.CreateRefreshToken();
-
-            _context.HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, 
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = refreshToken.Expires
-                });
-
-            user.RefreshToken = refreshToken.Token;
-            user.TokenCreated = refreshToken.Created;
-            user.TokenExpires = refreshToken.Expires;
-
-            await _unitOfWork.SaveChangesAsync();
 
             return new Tuple<ShowNewUserDto, string>(new ShowNewUserDto
             {

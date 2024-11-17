@@ -3,6 +3,7 @@ using Library.Domain.Helpers;
 using Library.Application.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Library.Application.UseCases.AccountUseCases;
+using Microsoft.AspNetCore.Http;
 
 namespace LibraryWebApi.Services
 {
@@ -35,7 +36,7 @@ namespace LibraryWebApi.Services
             return await _registerUseCase.Register(registerDto);
         }
 
-        public async Task<ShowNewUserDto> Login(LoginDto loginDto)
+        public async Task<Tuple<ShowNewUserDto, string>> Login(LoginDto loginDto)
         {
             return await _loginUseCase.Login(loginDto);
         }

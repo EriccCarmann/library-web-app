@@ -21,10 +21,11 @@ using Library.Application.UseCases.BookUseCases;
 using Library.Application.UseCases.AuthorUseCases;
 using Library.Application.UseCases.AccountUseCases;
 using Swashbuckle.AspNetCore.Filters;
-using Library.Infrastructure;
+using Library.Infrastructure.TokenServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 #region Exceptions
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -101,17 +102,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
-
-    /*var scheme = new OpenApiSecurityScheme
-    {
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };*/
-
-    //options.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
 });
 #endregion
 
@@ -132,32 +122,19 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
 
-/*builder.Services.AddIdentityServer()
-    .AddAspNetIdentity<LibraryUser>()
-    .AddInMemoryApiResources(Configuration.GetApiResources())
-    .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
-    .AddInMemoryClients(Configuration.GetClients())
-    .AddInMemoryApiScopes(Configuration.GetApiScopes())
-    .AddDeveloperSigningCredential();*/
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
     .AddJwtBearer(options =>
     {
-        //options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            //ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            //ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("vaWE8WuA19cleeg2RhHLB7qp8wsSpUTVGgbjq6AhIcPELx42jm8feBUH5c7m5oc7")),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("vaWE8WuA19cleeg2RhHLB7qp8wsSpUTVGgbjq6AhIcPELx42jm8feBUH5c7m5oc7")),
             ValidateIssuer = false,
             ValidateAudience = false,
-            //ClockSkew = new TimeSpan(0, 0, 5)
         };
     });
 
@@ -174,8 +151,6 @@ builder.Services.AddAuthorization(opt =>
                                       || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
-
-builder.Services.AddScoped<IGenerateToken, GenerateToken>();
 #endregion
 
 #region Authentication and Authorization
@@ -186,8 +161,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-builder.Services.AddHttpClient();
+builder.Services.AddScoped<IGenerateToken, GenerateToken>();
+builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 
+builder.Services.AddHttpContextAccessor();
 #endregion
 
 var app = builder.Build();
@@ -204,8 +181,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.UseIdentityServer();
 
 app.UseCookiePolicy();
 

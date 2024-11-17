@@ -1,6 +1,7 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
 using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.Application.UseCases.AccountUseCases
 {
@@ -8,14 +9,23 @@ namespace Library.Application.UseCases.AccountUseCases
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenerateToken _generateToken;
+        private readonly IGenerateRefreshToken _generateRefreshToken;
 
-        public LoginUseCase(IUnitOfWork unitOfWork, IGenerateToken generateToken)
+        private readonly IHttpContextAccessor _context;
+
+        public LoginUseCase(
+            IUnitOfWork unitOfWork, 
+            IGenerateToken generateToken, 
+            IGenerateRefreshToken generateRefreshToken,
+            IHttpContextAccessor context)
         {
             _unitOfWork = unitOfWork;
             _generateToken = generateToken;
+            _generateRefreshToken = generateRefreshToken;
+            _context = context;
         }
 
-        public async Task<ShowNewUserDto> Login(LoginDto loginDto)
+        public async Task<Tuple<ShowNewUserDto, string>> Login(LoginDto loginDto)
         {
             var user = await _unitOfWork.Account.FindUserByName(loginDto.UserName);
 
@@ -33,13 +43,27 @@ namespace Library.Application.UseCases.AccountUseCases
 
             string token = await _generateToken.CreateToken(user);
 
-            Console.Write(token);
+            var refreshToken = _generateRefreshToken.CreateRefreshToken();
 
-            return new ShowNewUserDto
+            _context.HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, 
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshToken.Expires
+                });
+
+            user.RefreshToken = refreshToken.Token;
+            user.TokenCreated = refreshToken.Created;
+            user.TokenExpires = refreshToken.Expires;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new Tuple<ShowNewUserDto, string>(new ShowNewUserDto
             {
                 UserName = user.UserName,
                 Email = user.Email
-            };
+            },
+            token);
         }
     }
 }

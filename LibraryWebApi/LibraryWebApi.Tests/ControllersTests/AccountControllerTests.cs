@@ -2,8 +2,8 @@
 using FakeItEasy;
 using FluentAssertions;
 using LibraryWebApi.Controllers;
-using LibraryWebApi.DTOs.LibraryUserDTOs;
 using LibraryWebApi.Services;
+using Library.Application.DTOs.LibraryUserDTOs;
 
 namespace LibraryWebApi.Tests.ControllersTests
 {

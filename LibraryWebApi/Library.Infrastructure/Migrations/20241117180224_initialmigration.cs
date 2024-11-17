@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Library.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialsetup : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -211,14 +211,14 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a8a67eaf-27eb-4375-a610-74fd76693277", null, "User", "USER" },
-                    { "c1ddc1e6-a931-48f5-845c-3e5072e4283c", null, "Admin", "ADMIN" }
+                    { "01b46134-712e-4943-b910-25f886088938", null, "Admin", "ADMIN" },
+                    { "d4bb38f0-6f82-4ca2-ab82-9e76cec19a73", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "44b51e23-46ec-475c-b5a9-f30e5d3e6637", null, false, false, null, null, null, "AQAAAAIAAYagAAAAEIi4uQGV86m8DaU+BBw+0ZcQmKd8frMVU/CjyLS6VQ1nvqGTS7OUvO6plQLyO8H/1Q==", null, false, "54f34e78-6eea-42e3-8f2f-c30068b29df4", false, "Admin" });
+                values: new object[] { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "b5c5f502-08fd-4669-a0f0-02ba1add07cd", "admin@example.com", false, false, null, "ADMIN@EXAMPLE.COM", "ADMIN", "AQAAAAIAAYagAAAAEKSdTFjrEm3rMkpi+mejqpsR1DrdQIoK0+DEd792Hx2mBtEqs75Rzmhh1LS0POwHMQ==", null, false, "9331fffd-ef67-4cc2-b0b3-76c70309b451", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Author",

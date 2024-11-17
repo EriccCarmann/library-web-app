@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241112091041_initialsetup")]
-    partial class initialsetup
+    [Migration("20241117180224_initialmigration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -284,12 +284,15 @@ namespace Library.Infrastructure.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "44b51e23-46ec-475c-b5a9-f30e5d3e6637",
+                            ConcurrencyStamp = "b5c5f502-08fd-4669-a0f0-02ba1add07cd",
+                            Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEIi4uQGV86m8DaU+BBw+0ZcQmKd8frMVU/CjyLS6VQ1nvqGTS7OUvO6plQLyO8H/1Q==",
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKSdTFjrEm3rMkpi+mejqpsR1DrdQIoK0+DEd792Hx2mBtEqs75Rzmhh1LS0POwHMQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "54f34e78-6eea-42e3-8f2f-c30068b29df4",
+                            SecurityStamp = "9331fffd-ef67-4cc2-b0b3-76c70309b451",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -324,13 +327,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c1ddc1e6-a931-48f5-845c-3e5072e4283c",
+                            Id = "01b46134-712e-4943-b910-25f886088938",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a8a67eaf-27eb-4375-a610-74fd76693277",
+                            Id = "d4bb38f0-6f82-4ca2-ab82-9e76cec19a73",
                             Name = "User",
                             NormalizedName = "USER"
                         });

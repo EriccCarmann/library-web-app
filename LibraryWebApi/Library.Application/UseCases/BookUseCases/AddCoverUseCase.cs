@@ -43,7 +43,7 @@ namespace Library.Application.UseCases.BookUseCases
 
             await _unitOfWork.SaveChangesAsync();
 
-            var all = await GetAll(queryObject);
+            var all = _mapper.Map<IEnumerable<Book>>(await _unitOfWork.Book.GetAllAsync(queryObject)); ;
 
             return all;
         }

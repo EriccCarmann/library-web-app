@@ -5,8 +5,5 @@ namespace Library.Domain.Entities
     public class LibraryUser : IdentityUser
     {
         public List<Book>? Books { get; } = null;
-        public string RefreshToken { get; set; } = string.Empty;
-        public DateTime TokenCreated { get; set; }
-        public DateTime TokenExpires { get; set; }
     }
 }

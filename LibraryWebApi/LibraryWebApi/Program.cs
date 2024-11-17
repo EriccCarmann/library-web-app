@@ -162,7 +162,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IGenerateToken, GenerateToken>();
-builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
+
 
 builder.Services.AddHttpContextAccessor();
 #endregion

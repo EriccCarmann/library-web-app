@@ -22,8 +22,9 @@ namespace LibraryWebApi.Controllers
             _userManager = userManager;
             _bookService = bookService;
         }
-     
+
         [Authorize(Policy = "User")]
+        //[Authorize(Roles = "User")]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {

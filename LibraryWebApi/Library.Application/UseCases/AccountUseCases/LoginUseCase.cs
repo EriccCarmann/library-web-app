@@ -7,10 +7,12 @@ namespace Library.Application.UseCases.AccountUseCases
     public class LoginUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IGenerateToken _generateToken;
 
-        public LoginUseCase(IUnitOfWork unitOfWork)
+        public LoginUseCase(IUnitOfWork unitOfWork, IGenerateToken generateToken)
         {
             _unitOfWork = unitOfWork;
+            _generateToken = generateToken;
         }
 
         public async Task<ShowNewUserDto> Login(LoginDto loginDto)
@@ -28,6 +30,10 @@ namespace Library.Application.UseCases.AccountUseCases
             {
                 throw new WrongPasswordException("Wrong password");
             }
+
+            string token = await _generateToken.CreateToken(user);
+
+            Console.Write(token);
 
             return new ShowNewUserDto
             {

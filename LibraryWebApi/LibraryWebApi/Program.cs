@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using LibraryWebApi;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
 using LibraryWebApi.Services;
@@ -22,6 +20,8 @@ using System.Text;
 using Library.Application.UseCases.BookUseCases;
 using Library.Application.UseCases.AuthorUseCases;
 using Library.Application.UseCases.AccountUseCases;
+using Swashbuckle.AspNetCore.Filters;
+using Library.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,24 +92,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter 'Bearer [jwt]'",
+        Description = "Authorization. Bearer Scheme (\"bearer {token}\")",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
 
-    var scheme = new OpenApiSecurityScheme
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    /*var scheme = new OpenApiSecurityScheme
     {
         Reference = new OpenApiReference
         {
             Type = ReferenceType.SecurityScheme,
             Id = "Bearer"
         }
-    };
+    };*/
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
+    //options.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
 });
 #endregion
 
@@ -141,22 +143,23 @@ builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
     .AddJwtBearer(options =>
     {
-        options.SaveToken = true;
+        //options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecuritykeyfortokenssymmetric")),
-            ClockSkew = new TimeSpan(0, 0, 5)
+            ValidateIssuerSigningKey = true,
+            //ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            //ValidAudience = builder.Configuration["JWT:ValidAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("vaWE8WuA19cleeg2RhHLB7qp8wsSpUTVGgbjq6AhIcPELx42jm8feBUH5c7m5oc7")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            //ClockSkew = new TimeSpan(0, 0, 5)
         };
     });
-
-
 
 builder.Services.AddAuthorization(opt =>
 {
@@ -171,6 +174,8 @@ builder.Services.AddAuthorization(opt =>
                                       || x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
+
+builder.Services.AddScoped<IGenerateToken, GenerateToken>();
 #endregion
 
 #region Authentication and Authorization
@@ -200,7 +205,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseIdentityServer();
+//app.UseIdentityServer();
 
 app.UseCookiePolicy();
 

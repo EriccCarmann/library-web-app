@@ -254,12 +254,6 @@ namespace Library.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RefreshTokenExpiry")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -287,16 +281,15 @@ namespace Library.Infrastructure.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "de1ba3d2-85f9-45a1-9585-a7e617facc9f",
+                            ConcurrencyStamp = "b5c5f502-08fd-4669-a0f0-02ba1add07cd",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAELHO+HutfxpZQHOL2ZQeXBhOncQCQRnIp2zOckPscRE4CFoMz6cNjCxR0+/h8q10IA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKSdTFjrEm3rMkpi+mejqpsR1DrdQIoK0+DEd792Hx2mBtEqs75Rzmhh1LS0POwHMQ==",
                             PhoneNumberConfirmed = false,
-                            RefreshTokenExpiry = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "e368cbb2-9c5a-4eaf-ac02-ff162cc6f7f8",
+                            SecurityStamp = "9331fffd-ef67-4cc2-b0b3-76c70309b451",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -331,13 +324,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "96b25088-7aaf-4a25-aa2b-5388ee0e3778",
+                            Id = "01b46134-712e-4943-b910-25f886088938",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a5ebe1f3-1a47-4e12-a491-2318b19d40fa",
+                            Id = "d4bb38f0-6f82-4ca2-ab82-9e76cec19a73",
                             Name = "User",
                             NormalizedName = "USER"
                         });

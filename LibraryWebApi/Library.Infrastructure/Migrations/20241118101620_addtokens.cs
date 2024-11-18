@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Library.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addedtokens : Migration
+    public partial class addtokens : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,13 +31,6 @@ namespace Library.Infrastructure.Migrations
                 defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "TokenCreated",
-                table: "AspNetUsers",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
                 name: "TokenExpires",
                 table: "AspNetUsers",
                 type: "datetime2",
@@ -49,16 +42,16 @@ namespace Library.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5c3cd7a0-8634-49a1-a0b6-e983a1beb262", null, "Admin", "ADMIN" },
-                    { "9ab7061b-4189-47d4-afea-ee7645e77a0c", null, "User", "USER" }
+                    { "884a35f5-19cf-411f-85c5-e1c680a7f1b6", null, "Admin", "ADMIN" },
+                    { "c57bf5d5-87e1-49ee-a897-2fb2032a4801", null, "User", "USER" }
                 });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "b74ddd14-6340-4840-95c2-db12554843e5",
-                columns: new[] { "ConcurrencyStamp", "PasswordHash", "RefreshToken", "SecurityStamp", "TokenCreated", "TokenExpires" },
-                values: new object[] { "e9a61552-c201-4065-82dc-e0fada7381bc", "AQAAAAIAAYagAAAAEDUvY8E8vSbLb+HcTKAwsNV+EOlOlLr26G96nWtkrm1kM3W4MbcBd19X0jpE/HSvDA==", "", "c1564100-e1d1-4920-945a-a7a8d4745c2e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "RefreshToken", "SecurityStamp", "TokenExpires" },
+                values: new object[] { "066cccb5-0120-4fc0-807a-4079ea1125c5", "AQAAAAIAAYagAAAAEEhIAlO7272FqV8R5JaUVB03WbeGPqPgeATF2vE2MXbxDXhzlKCg6bcvMpf+EVFBBQ==", "", "9c206400-f42f-401a-873c-85fbd81f2a83", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
         }
 
         /// <inheritdoc />
@@ -67,19 +60,15 @@ namespace Library.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "5c3cd7a0-8634-49a1-a0b6-e983a1beb262");
+                keyValue: "884a35f5-19cf-411f-85c5-e1c680a7f1b6");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "9ab7061b-4189-47d4-afea-ee7645e77a0c");
+                keyValue: "c57bf5d5-87e1-49ee-a897-2fb2032a4801");
 
             migrationBuilder.DropColumn(
                 name: "RefreshToken",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "TokenCreated",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

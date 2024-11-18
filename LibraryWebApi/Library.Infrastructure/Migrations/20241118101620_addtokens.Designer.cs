@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241117223038_addedtokens")]
-    partial class addedtokens
+    [Migration("20241118101620_addtokens")]
+    partial class addtokens
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,9 +264,6 @@ namespace Library.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TokenCreated")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("TokenExpires")
                         .HasColumnType("datetime2");
 
@@ -294,17 +291,16 @@ namespace Library.Infrastructure.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e9a61552-c201-4065-82dc-e0fada7381bc",
+                            ConcurrencyStamp = "066cccb5-0120-4fc0-807a-4079ea1125c5",
                             Email = "admin@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDUvY8E8vSbLb+HcTKAwsNV+EOlOlLr26G96nWtkrm1kM3W4MbcBd19X0jpE/HSvDA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEhIAlO7272FqV8R5JaUVB03WbeGPqPgeATF2vE2MXbxDXhzlKCg6bcvMpf+EVFBBQ==",
                             PhoneNumberConfirmed = false,
                             RefreshToken = "",
-                            SecurityStamp = "c1564100-e1d1-4920-945a-a7a8d4745c2e",
-                            TokenCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "9c206400-f42f-401a-873c-85fbd81f2a83",
                             TokenExpires = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TwoFactorEnabled = false,
                             UserName = "Admin"
@@ -340,13 +336,13 @@ namespace Library.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5c3cd7a0-8634-49a1-a0b6-e983a1beb262",
+                            Id = "884a35f5-19cf-411f-85c5-e1c680a7f1b6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9ab7061b-4189-47d4-afea-ee7645e77a0c",
+                            Id = "c57bf5d5-87e1-49ee-a897-2fb2032a4801",
                             Name = "User",
                             NormalizedName = "USER"
                         });

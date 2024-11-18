@@ -1,5 +1,8 @@
-﻿using Library.Domain.Entities;
+﻿using Library.Application.DTOs.LibraryUserDTOs;
+using Library.Domain.Entities;
+using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
+using Library.Infrastructure.UnitOfWork;
 using System.Security.Cryptography;
 
 namespace Library.Infrastructure.TokenServices
@@ -13,9 +16,6 @@ namespace Library.Infrastructure.TokenServices
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 Expires = DateTime.Now.AddDays(7) 
             };
-
-            Console.WriteLine(refreshToken);
-
             return refreshToken;
         }
     }

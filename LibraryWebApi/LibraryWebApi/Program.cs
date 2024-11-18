@@ -25,7 +25,6 @@ using Library.Infrastructure.TokenServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();
 #region Exceptions
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -67,6 +66,7 @@ builder.Services.AddScoped<GetAllUsersUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<LogoutUseCase>();
 builder.Services.AddScoped<RegisterUseCase>();
+builder.Services.AddScoped<RefreshTokensUseCase>();
 
 builder.Services.AddScoped<CreateAuthorUseCase>();
 builder.Services.AddScoped<DeleteAuthorUseCase>();

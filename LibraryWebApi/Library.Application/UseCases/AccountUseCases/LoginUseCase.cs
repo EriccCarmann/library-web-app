@@ -1,7 +1,6 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
 using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace Library.Application.UseCases.AccountUseCases
 {
@@ -9,16 +8,19 @@ namespace Library.Application.UseCases.AccountUseCases
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenerateToken _generateToken;
+        private readonly IGenerateRefreshToken _generateRefreshToken;
 
         public LoginUseCase(
             IUnitOfWork unitOfWork, 
-            IGenerateToken generateToken)
+            IGenerateToken generateToken, 
+            IGenerateRefreshToken generateRefreshToken)
         {
             _unitOfWork = unitOfWork;
             _generateToken = generateToken;
+            _generateRefreshToken = generateRefreshToken;
         }
 
-        public async Task<Tuple<ShowNewUserDto, string>> Login(LoginDto loginDto)
+        public async Task<ShowLoggedInUserDto> Login(LoginDto loginDto)
         {
             var user = await _unitOfWork.Account.FindUserByName(loginDto.UserName);
 
@@ -36,12 +38,20 @@ namespace Library.Application.UseCases.AccountUseCases
 
             string token = await _generateToken.CreateToken(user);
 
-            return new Tuple<ShowNewUserDto, string>(new ShowNewUserDto
+            var refreshToken = _generateRefreshToken.CreateRefreshToken();
+
+            user.RefreshToken = refreshToken.Token;
+            user.TokenExpires = refreshToken.Expires;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ShowLoggedInUserDto
             {
                 UserName = user.UserName,
-                Email = user.Email
-            },
-            token);
+                Email = user.Email,
+                Token = token,
+                RefreshToken = refreshToken.Token
+            };
         }
     }
 }

@@ -66,6 +66,7 @@ builder.Services.AddScoped<GetAllUsersUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<LogoutUseCase>();
 builder.Services.AddScoped<RegisterUseCase>();
+builder.Services.AddScoped<RefreshTokensUseCase>();
 
 builder.Services.AddScoped<CreateAuthorUseCase>();
 builder.Services.AddScoped<DeleteAuthorUseCase>();
@@ -161,6 +162,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IGenerateToken, GenerateToken>();
+builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 
 builder.Services.AddHttpContextAccessor();
 #endregion

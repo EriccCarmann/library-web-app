@@ -41,6 +41,14 @@ namespace LibraryWebApi.Controllers
             return Ok(user);
         }
 
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(LoginDto loginDto)
+        {
+            var user = await _accountService.Refresh(loginDto);
+
+            return Ok(user);
+        }
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

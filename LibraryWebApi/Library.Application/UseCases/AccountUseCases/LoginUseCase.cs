@@ -1,10 +1,6 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
-using Library.Domain.Entities;
 using Library.Domain.Exceptions;
 using Library.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Linq;
 
 namespace Library.Application.UseCases.AccountUseCases
 {

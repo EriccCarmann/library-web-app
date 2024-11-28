@@ -2,7 +2,7 @@
 using Library.Application.DTOs.BookDTOs;
 using Library.Application.Validators;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

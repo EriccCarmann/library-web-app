@@ -1,4 +1,4 @@
-﻿namespace Library.Domain.Exceptions
+﻿namespace Library.Application.Exceptions
 {
     public class WrongPasswordException : Exception
     {

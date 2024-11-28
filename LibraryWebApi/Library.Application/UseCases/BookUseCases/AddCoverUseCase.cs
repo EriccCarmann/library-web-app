@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Helpers;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;

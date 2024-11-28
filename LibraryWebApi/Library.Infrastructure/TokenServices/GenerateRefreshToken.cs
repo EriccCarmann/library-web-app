@@ -1,6 +1,6 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Library.Infrastructure.UnitOfWork;
 using System.Security.Cryptography;

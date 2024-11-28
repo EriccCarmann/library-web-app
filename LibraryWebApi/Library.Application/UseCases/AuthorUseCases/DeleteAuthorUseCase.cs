@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,13 @@ namespace Library.Application.UseCases.AuthorUseCases
 
         public async Task DeleteAuthor([FromRoute] int id)
         {
+            var existingAuthor = await _unitOfWork.Author.GetByIdAsync(id);
+
+            if (existingAuthor is null)
+            {
+                throw new EntityNotFoundException($"{existingAuthor} is not found in database.");
+            }
+
             await _unitOfWork.Author.DeleteAsync(id);
 
             await _unitOfWork.SaveChangesAsync();

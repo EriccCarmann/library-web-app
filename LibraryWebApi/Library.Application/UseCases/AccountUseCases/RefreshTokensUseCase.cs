@@ -32,11 +32,6 @@ namespace Library.Application.UseCases.AccountUseCases
 
             var token = _generateToken.CreateToken(user);
 
-            var newRefreshToken = _generateRefreshToken.CreateRefreshToken();
-
-            user.RefreshToken = newRefreshToken.Token;
-            user.TokenExpires = newRefreshToken.Expires;
-
             _unitOfWork.SaveChangesAsync();
 
             return new ShowLoggedInUserDto
@@ -44,7 +39,7 @@ namespace Library.Application.UseCases.AccountUseCases
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = token.Result,
-                RefreshToken = newRefreshToken.Token
+                RefreshToken = user.RefreshToken
             };
         }
     }

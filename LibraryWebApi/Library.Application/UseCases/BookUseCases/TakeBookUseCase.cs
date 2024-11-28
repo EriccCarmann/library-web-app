@@ -19,6 +19,11 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<Book> TakeBook(string bookTitle, string userId)
         {
+            if (userId == null)
+            {
+                throw new EntityNotFoundException($"User was not found");
+            }
+
             var takeBook = await _unitOfWork.Book.TakeBook(bookTitle, userId);
 
             if (takeBook == null)

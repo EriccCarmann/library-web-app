@@ -108,6 +108,8 @@ namespace LibraryWebApi.Controllers
         [HttpPut("takebook")]
         public async Task<IActionResult> TakeBook(string bookName)
         {
+            Console.WriteLine("dsfkgljsl;tjslkjlkdjfghlsdkjhl   dfklsghjd;fhk's't" + _userManager.GetUserId(User).ToString());
+
             var takeBook = await _takeBookUseCase.TakeBook(bookName, _userManager.GetUserId(User).ToString());
 
             return Ok(takeBook);

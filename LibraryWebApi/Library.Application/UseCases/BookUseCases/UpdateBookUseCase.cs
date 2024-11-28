@@ -5,6 +5,7 @@ using Library.Domain.Entities;
 using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Library.Application.UseCases.BookUseCases
 {
@@ -39,6 +40,11 @@ namespace Library.Application.UseCases.BookUseCases
             if (!_bookValidator.Validate(newBook).IsValid)
             {
                 throw new DataValidationException("Input data is invalid. Make sure that ISBN has 13 characters.");
+            }
+
+            if (_unitOfWork.Book.GetByIdISBN(newBook.ISBN) != null)
+            {
+                throw new BookDataException("ISBN already exists");
             }
 
             var updatedBook = await _unitOfWork.Book.UpdateAsync(id, newBook);

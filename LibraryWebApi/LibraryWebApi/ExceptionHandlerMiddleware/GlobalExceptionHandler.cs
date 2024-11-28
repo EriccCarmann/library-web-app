@@ -32,6 +32,11 @@ namespace LibraryWebApi.ExceptionHandlerMiddleware
                     details.Title = "Validation Error";
                     details.Detail = "Password or username is invalid";
                     break;
+                case BookDataException validationCredentialsException:
+                    details.Status = (int)HttpStatusCode.BadRequest;
+                    details.Title = "Validation Error";
+                    details.Detail = "ISBN already exists";
+                    break;
                 case DataValidationException dataValidationException:
                     details.Status = (int)HttpStatusCode.BadRequest;
                     details.Title = "Data Validation Error";

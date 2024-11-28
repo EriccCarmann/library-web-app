@@ -29,6 +29,11 @@ namespace Library.Application.UseCases.BookUseCases
                 throw new DataValidationException("Input data is invalid. Make sure that ISBN has 13 characters.");
             }
 
+            if (_unitOfWork.Book.GetByIdISBN(data.ISBN) != null)
+            {
+                throw new BookDataException("ISBN already exists");
+            }
+
             await _unitOfWork.Book.CreateAsync(_book);
 
             await _unitOfWork.SaveChangesAsync();

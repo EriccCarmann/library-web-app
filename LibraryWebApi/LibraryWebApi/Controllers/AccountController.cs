@@ -1,6 +1,5 @@
 ﻿using Library.Domain.Helpers;
 using Library.Application.DTOs.LibraryUserDTOs;
-using LibraryWebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Application.UseCases.AccountUseCases;
@@ -42,25 +41,19 @@ namespace LibraryWebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto) 
         {
-            var user = await _registerUseCase.Register(registerDto);
-
-            return Ok(user);
+            return Ok(await _registerUseCase.Register(registerDto));
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto) 
         {
-            var user = await _loginUseCase.Login(loginDto);
-
-            return Ok(user);
+            return Ok(await _loginUseCase.Login(loginDto));
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(LoginDto loginDto)
         {
-            var user = await _refreshTokensUseCase.RefreshTokens(loginDto);
-
-            return Ok(user);
+            return Ok(await _refreshTokensUseCase.RefreshTokens(loginDto));
         }
 
         [HttpPost("logout")]

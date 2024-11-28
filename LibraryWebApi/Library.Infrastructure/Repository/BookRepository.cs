@@ -15,11 +15,14 @@ namespace Library.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Book?> GetByIdISBN(string ISBN)
+        public async Task<Book?> GetByISBN(string ISBN)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+            return await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+        }
 
-            return book;
+        public async Task<Book?> GetByTitle(string title)
+        {
+            return await _context.Book.FirstOrDefaultAsync(x => x.Title == title);
         }
 
         public async Task<Book?> TakeBook(string bookTitle, string userId)
@@ -53,15 +56,11 @@ namespace Library.Infrastructure.Repository
             return book;
         }
 
-        public async Task<Book?> AddCover(string bookTitle, byte[] file)
+        public Book AddCover(Book book, byte[] file)
         {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
+            book.Cover = file;
 
-            if (existingBook == null) return null;
-
-            existingBook.Cover = file;
-
-            return existingBook;
+            return book;
         }
     }
 }

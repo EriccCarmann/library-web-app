@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Library.Application.DTOs.BookDTOs;
-using Library.Application.Services;
 using Library.Application.UseCases.BookUseCases;
 
 namespace LibraryWebApi.Controllers
@@ -79,7 +78,7 @@ namespace LibraryWebApi.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPost("{id}")]
+        [HttpPost("createbook")]
          public async Task<IActionResult> CreateBook(BookCreateDto data) 
          {
             var _newBook = await _createBookUseCase.CreateBook(data);

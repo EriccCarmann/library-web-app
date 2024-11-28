@@ -6,13 +6,10 @@ namespace Library.Application.UseCases.BookUseCases
 {
     public class DeleteBookUseCase
     {
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteBookUseCase(IMapper mapper,
-            IUnitOfWork unitOfWork)
+        public DeleteBookUseCase(IUnitOfWork unitOfWork)
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
 

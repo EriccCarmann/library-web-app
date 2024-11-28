@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.Application.Exceptions;
 using Library.Domain.Entities;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,11 @@ namespace Library.Application.UseCases.AuthorUseCases
         public async Task<Author> GetById([FromRoute] int id)
         {
             var author = await _unitOfWork.Author.GetByIdAsync(id);
+
+            if (author is null)
+            {
+                throw new EntityNotFoundException($"{author} with ID {id} not found.");
+            }
 
             return author;
         }

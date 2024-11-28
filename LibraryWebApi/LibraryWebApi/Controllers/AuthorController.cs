@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Library.Application.DTOs.AuthorDTOs;
-using LibraryWebApi.Services;
 using Library.Application.UseCases.AuthorUseCases;
 
 namespace LibrLibraryWebApiary.Controllers

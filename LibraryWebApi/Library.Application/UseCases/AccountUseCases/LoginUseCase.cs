@@ -29,6 +29,11 @@ namespace Library.Application.UseCases.AccountUseCases
                 throw new EntityNotFoundException($"User {loginDto.UserName} is not found in database.");
             }
 
+            if (!_unitOfWork.Account.CheckPasswordAsync(user, loginDto.Password).Result)
+            {
+                throw new InvalidPassworException("Password is invalid");
+            }
+
             var result = await _unitOfWork.Account.Login(loginDto.UserName, loginDto.Password);
 
             if (!result.Succeeded)

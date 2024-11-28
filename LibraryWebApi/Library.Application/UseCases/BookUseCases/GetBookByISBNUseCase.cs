@@ -18,7 +18,7 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<Book> GetByISBN(string ISBN)
         {
-            var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
+            var book = await _unitOfWork.Book.GetByISBN(ISBN);
 
             if (book == null)
             {

@@ -5,7 +5,9 @@ namespace Library.Domain.Interfaces
 {
     public interface IBookRepository : IGenericRepository<Book>
     {
-        Task<Book?> GetByIdISBN(string ISBN);
+        Task<Book?> GetByISBN(string ISBN);
+
+        Task<Book?> GetByTitle(string title);
 
         Task<Book?> TakeBook(string bookTitle, string userId);
 
@@ -13,6 +15,6 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> ReturnBook(string bookTitle, string userId);
 
-        Task<Book?> AddCover(string bookTitle, byte[] cover);
+        Book AddCover(Book book, byte[] cover);
     }
 }

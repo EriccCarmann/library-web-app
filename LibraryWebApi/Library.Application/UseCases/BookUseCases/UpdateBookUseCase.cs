@@ -26,6 +26,13 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<BookReadDto> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto)
         {
+            var existingBook = await _unitOfWork.Book.GetByIdAsync(id);
+
+            if (existingBook is null)
+            {
+                throw new EntityNotFoundException($"{existingBook} is not found in database.");
+            }
+
             Book newBook = new Book
             {
                 Id = id,
@@ -40,11 +47,6 @@ namespace Library.Application.UseCases.BookUseCases
             if (!_bookValidator.Validate(newBook).IsValid)
             {
                 throw new DataValidationException("Input data is invalid. Make sure that ISBN has 13 characters.");
-            }
-
-            if (_unitOfWork.Book.GetByIdISBN(newBook.ISBN) != null)
-            {
-                throw new BookDataException("ISBN already exists");
             }
 
             var updatedBook = await _unitOfWork.Book.UpdateAsync(id, newBook);

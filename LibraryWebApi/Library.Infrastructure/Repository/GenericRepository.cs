@@ -16,6 +16,7 @@ namespace Library.Infrastructure.Repository
             _context = context;
             table = _context.Set<T>();
         }
+
         public async Task<List<T>> GetAllAsync(QueryObject query)
         {
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -25,14 +26,7 @@ namespace Library.Infrastructure.Repository
 
         public async Task<T?> GetByIdAsync(object id)
         {
-            var item = await _context.Set<T>().FindAsync(id);
-
-            if (item is null)
-            {
-                throw new EntityNotFoundException($"{typeof(T).Name} with ID {id} not found.");
-            }
-
-            return item;
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public async Task<T?> CreateAsync(T obj)
@@ -44,11 +38,6 @@ namespace Library.Infrastructure.Repository
         public async Task<T?> UpdateAsync(object id, T obj)
         {
             var item = await table.FindAsync(id);
-
-            if (item is null)
-            {
-                throw new EntityNotFoundException($"{item} is not found in database.");
-            }
 
             _context.Entry(item).CurrentValues.SetValues(obj);
 

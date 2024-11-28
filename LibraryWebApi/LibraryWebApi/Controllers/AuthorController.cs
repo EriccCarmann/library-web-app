@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Domain.Helpers;
 using Library.Application.DTOs.AuthorDTOs;
 using LibraryWebApi.Services;
+using Library.Application.UseCases.AuthorUseCases;
 
 namespace LibrLibraryWebApiary.Controllers
 {
@@ -12,20 +13,35 @@ namespace LibrLibraryWebApiary.Controllers
     [ApiController]
     public class AuthorController : Controller
     {
-        private readonly AuthorService _authorService;
+        private readonly GetAllAuthorsUseCase _getAllAuthorsUseCase;
+        private readonly GetAuthorByIdUseCase _getAuthorByIdUseCase;
+        private readonly CreateAuthorUseCase _createAuthorUseCase;
+        private readonly UpdateAuthorUseCase _updateAuthorUseCase;
+        private readonly DeleteAuthorUseCase _deleteAuthorUseCase;
+        private readonly FindAuthorByNameUseCase _findAuthorByNameUseCase;
 
         public AuthorController(
             IMapper mapper,
-            AuthorService authorService) 
+            GetAllAuthorsUseCase getAllAuthorsUseCase,
+            GetAuthorByIdUseCase getAuthorByIdUseCase,
+            CreateAuthorUseCase createAuthorUseCase,
+            UpdateAuthorUseCase updateAuthorUseCase,
+            DeleteAuthorUseCase deleteAuthorUseCase,
+            FindAuthorByNameUseCase findAuthorByNameUseCase) 
         {
-            _authorService = authorService;
+            _getAllAuthorsUseCase = getAllAuthorsUseCase;
+            _getAuthorByIdUseCase = getAuthorByIdUseCase;
+            _createAuthorUseCase = createAuthorUseCase;
+            _updateAuthorUseCase = updateAuthorUseCase;
+            _deleteAuthorUseCase = deleteAuthorUseCase;
+            _findAuthorByNameUseCase = findAuthorByNameUseCase;
         }
 
         [Authorize(Policy = "User")]
         [HttpGet("getall")]
         public async Task<ActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
-            var authors = await _authorService.GetAll(queryObject);
+            var authors = await _getAllAuthorsUseCase.GetAll(queryObject);
 
             return Ok(authors);
         }
@@ -34,7 +50,7 @@ namespace LibrLibraryWebApiary.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult?> GetById([FromRoute] int id)
         {
-            var author = await _authorService.GetById(id);
+            var author = await _getAuthorByIdUseCase.GetById(id);
 
             return Ok(author);
         }
@@ -43,7 +59,7 @@ namespace LibrLibraryWebApiary.Controllers
         [HttpPost("createauthor")]
         public async Task<IActionResult> CreateAuthor(AuthorCreateDto author) 
         {
-            var result = await _authorService.CreateAuthor(author);
+            var result = await _createAuthorUseCase.CreateAuthor(author);
 
             return CreatedAtAction("CreateAuthor", result);
         }
@@ -52,7 +68,7 @@ namespace LibrLibraryWebApiary.Controllers
         [HttpPut("updateauthor")]
         public async Task<IActionResult?> UpdateAuthor(string name, [FromBody] AuthorUpdateDto authorUpdateDto) 
         {
-            var author = await _authorService.UpdateAuthor(name, authorUpdateDto);
+            var author = await _updateAuthorUseCase.UpdateAuthor(name, authorUpdateDto);
 
             return Ok(author);
         }
@@ -61,7 +77,7 @@ namespace LibrLibraryWebApiary.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult?> DeleteAuthor([FromRoute] int id)
         {
-            await _authorService.DeleteAuthor(id);
+            await _deleteAuthorUseCase.DeleteAuthor(id);
 
             return NoContent();
         }
@@ -70,7 +86,7 @@ namespace LibrLibraryWebApiary.Controllers
         [HttpGet("findauthorbyname")]
         public async Task<Author?> FindAuthorByName(string name)
         {
-            return await _authorService.FindAuthorByName(name);
+            return await _findAuthorByNameUseCase.FindAuthorByName(name);
         }
     }
 }

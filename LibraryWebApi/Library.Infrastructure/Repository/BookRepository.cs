@@ -25,10 +25,8 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.FirstOrDefaultAsync(x => x.Title == title);
         }
 
-        public async Task<Book?> TakeBook(string bookTitle, string userId)
+        public async Task<Book?> TakeBook(Book book, string userId)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
-
             book.IsTaken = true;
             book.UserId = userId;
             book.TakeDateTime = DateTime.UtcNow;
@@ -44,10 +42,8 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.Where(b => b.UserId == userId).Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Book?> ReturnBook(string bookTitle, string userId)
+        public async Task<Book?> ReturnBook(Book book, string userId)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle && b.UserId == userId);
-
             book.IsTaken = false;
             book.UserId = null;
             book.TakeDateTime = null;

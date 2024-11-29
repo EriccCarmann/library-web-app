@@ -19,12 +19,24 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<Book> ReturnBook(string userId, string bookTitle)
         {
-            var book = await _unitOfWork.Book.ReturnBook(bookTitle, userId);
-
-            if (book == null)
+            if (userId == null)
             {
-                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+                throw new EntityNotFoundException($"User was not found");
             }
+
+            var existingBook = await _unitOfWork.Book.GetByTitle(bookTitle);
+
+            if (existingBook is null)
+            {
+                throw new EntityNotFoundException($"{existingBook} is not found in database.");
+            }
+
+            if (userId != existingBook.UserId)
+            {
+                throw new DataValidationException($"Current user did not take {bookTitle} book");
+            }
+
+            var book = await _unitOfWork.Book.ReturnBook(existingBook, userId);
 
             await _unitOfWork.SaveChangesAsync();
 

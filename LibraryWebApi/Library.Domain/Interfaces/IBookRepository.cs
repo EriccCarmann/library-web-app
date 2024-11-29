@@ -9,11 +9,11 @@ namespace Library.Domain.Interfaces
 
         Task<Book?> GetByTitle(string title);
 
-        Task<Book?> TakeBook(string bookTitle, string userId);
+        Task<Book?> TakeBook(Book book, string userId);
 
         Task<List<Book>?> GetTakenBooks(string userId, QueryObject query);
 
-        Task<Book?> ReturnBook(string bookTitle, string userId);
+        Task<Book?> ReturnBook(Book book, string userId);
 
         Book AddCover(Book book, byte[] cover);
     }

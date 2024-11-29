@@ -29,6 +29,7 @@ namespace Library.Infrastructure.TokenServices
 
             List<Claim> claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, libraryUser.Id),
                 new Claim(ClaimTypes.Name, libraryUser.UserName),
                 new Claim(ClaimTypes.Role, role)
             };

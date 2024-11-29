@@ -24,17 +24,19 @@ namespace Library.Application.UseCases.BookUseCases
                 throw new EntityNotFoundException($"User was not found");
             }
 
-            var takeBook = await _unitOfWork.Book.TakeBook(bookTitle, userId);
+            var existingBook = await _unitOfWork.Book.GetByTitle(bookTitle);
 
-            if (takeBook == null)
+            if (existingBook is null)
             {
-                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+                throw new EntityNotFoundException($"{bookTitle} is not found in database.");
             }
 
-            if (takeBook.IsTaken == true)
+            if (existingBook.IsTaken == true)
             {
                 throw new BookTakenException($"Book {bookTitle} was already taken");
             }
+
+            var takeBook = await _unitOfWork.Book.TakeBook(existingBook, userId);
 
             await _unitOfWork.SaveChangesAsync();
 

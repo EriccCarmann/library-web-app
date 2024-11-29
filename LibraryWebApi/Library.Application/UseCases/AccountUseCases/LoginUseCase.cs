@@ -31,14 +31,14 @@ namespace Library.Application.UseCases.AccountUseCases
 
             if (!_unitOfWork.Account.CheckPasswordAsync(user, loginDto.Password).Result)
             {
-                throw new InvalidPassworException("Password is invalid");
+                throw new InvalidPassworException();
             }
 
             var result = await _unitOfWork.Account.Login(loginDto.UserName, loginDto.Password);
 
             if (!result.Succeeded)
             {
-                throw new WrongPasswordException("Wrong password");
+                throw new WrongPasswordException();
             }
 
             string token = await _generateToken.CreateToken(user);

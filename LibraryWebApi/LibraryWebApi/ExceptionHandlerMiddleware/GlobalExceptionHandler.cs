@@ -47,10 +47,15 @@ namespace LibraryWebApi.ExceptionHandlerMiddleware
                     details.Title = "Data Validation Error";
                     details.Detail = "Input data is invalid";
                     break;
-                case EntityNotFoundException userNotFoundException:
+                case TokenExpiredException tokenExpiredException:
+                    details.Status = (int)HttpStatusCode.BadRequest;
+                    details.Title = "Data Validation Error";
+                    details.Detail = "Token is expired";
+                    break;
+                case EntityNotFoundException entityNotFoundException:
                     details.Status = (int)HttpStatusCode.NotFound;
                     details.Title = "Entity Not Found";
-                    details.Detail = userNotFoundException.Message;
+                    details.Detail = entityNotFoundException.Message;
                     break;
                 case LoginAlreadyExistsException userException:
                     details.Status = (int)HttpStatusCode.Unauthorized;
@@ -60,7 +65,7 @@ namespace LibraryWebApi.ExceptionHandlerMiddleware
                 case WrongPasswordException userException:
                     details.Status = (int)HttpStatusCode.Unauthorized;
                     details.Title = "Wrong Password";
-                    details.Detail = userException.Message;
+                    details.Detail = "Wrong password";
                     break;
                 case BookTakenException bookTakenException:
                     details.Status = (int)HttpStatusCode.BadRequest;

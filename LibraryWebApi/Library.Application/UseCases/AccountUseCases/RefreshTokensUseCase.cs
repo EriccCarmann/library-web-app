@@ -23,11 +23,15 @@ namespace Library.Application.UseCases.AccountUseCases
         public async Task<ShowLoggedInUserDto> RefreshTokens(LoginDto loginDto)
         {
             var user = _unitOfWork.Account.FindUserByName(loginDto.UserName).Result;
-            var refreshToken = user.RefreshToken;
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User {loginDto.UserName} is not found in database.");
+            }
 
             if (user.TokenExpires < DateTime.Now)
             {
-                throw new EntityNotFoundException($"Token expired");
+                throw new TokenExpiredException("Token is expired");
             }
 
             var token = _generateToken.CreateToken(user);

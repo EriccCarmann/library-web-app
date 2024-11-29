@@ -23,8 +23,6 @@ using Library.Infrastructure.TokenServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddScoped<HttpContext>();
-
 #region Exceptions
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

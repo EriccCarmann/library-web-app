@@ -4,6 +4,9 @@ using Library.Domain.Entities;
 using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Library.Application.UseCases.AccountUseCases
 {
@@ -11,12 +14,15 @@ namespace Library.Application.UseCases.AccountUseCases
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly LibraryUserValidator _libraryUserValidator;
+        private readonly UserManager<LibraryUser> _userManager;
 
         public RegisterUseCase(IUnitOfWork unitOfWork,
-            LibraryUserValidator libraryUserValidator)
+            LibraryUserValidator libraryUserValidator,
+            UserManager<LibraryUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _libraryUserValidator = libraryUserValidator;
+            _userManager = userManager;
         }
 
         public async Task<LibraryUser> Register([FromBody] RegisterDto registerDto)
@@ -31,20 +37,20 @@ namespace Library.Application.UseCases.AccountUseCases
             {
                 throw new DataValidationException("Input data is invalid");
             }
-
-            if (await _unitOfWork.Account.FindUserByName(libraryUser.UserName) != null)
+            
+            if (await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == libraryUser.UserName.ToLower()) != null)
             {
                 throw new LoginAlreadyExistsException($"Login {libraryUser.UserName} is already in use!");
             }
 
-            var resultUser = await _unitOfWork.Account.Register(libraryUser, registerDto.Password);
+            var resultUser = await _userManager.CreateAsync(libraryUser, registerDto.Password);
 
             if (!resultUser.Succeeded)
             {
                 throw new UserCreationException($"User {libraryUser.UserName} was not created");
             }
 
-            var resultClaim = await _unitOfWork.Account.AddUserClaim(libraryUser);
+            var resultClaim = await _userManager.AddClaimAsync(libraryUser, new Claim(ClaimTypes.Role, "User"));
 
             if (!resultClaim.Succeeded)
             {

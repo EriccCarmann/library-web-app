@@ -65,7 +65,7 @@ namespace Library.Infrastructure.UnitOfWork
             {
                 if (_account is null)
                 {
-                    _account = new AccountRepository(_context, _signInManager, _userManager);
+                    _account = new AccountRepository(_context);
                 }
 
                 return _account;

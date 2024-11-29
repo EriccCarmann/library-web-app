@@ -1,6 +1,9 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
 using Library.Application.Exceptions;
+using Library.Domain.Entities;
 using Library.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application.UseCases.AccountUseCases
 {
@@ -9,20 +12,23 @@ namespace Library.Application.UseCases.AccountUseCases
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenerateToken _generateToken;
         private readonly IGenerateRefreshToken _generateRefreshToken;
+        private readonly UserManager<LibraryUser> _userManager;
 
         public RefreshTokensUseCase(
             IUnitOfWork unitOfWork, 
             IGenerateToken generateToken, 
-            IGenerateRefreshToken generateRefreshToken)
+            IGenerateRefreshToken generateRefreshToken,
+            UserManager<LibraryUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _generateToken = generateToken;
             _generateRefreshToken = generateRefreshToken;
+            _userManager = userManager;
         }
 
         public async Task<ShowLoggedInUserDto> RefreshTokens(LoginDto loginDto)
         {
-            var user = _unitOfWork.Account.FindUserByName(loginDto.UserName).Result;
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName.ToLower() == loginDto.UserName.ToLower());
 
             if (user == null)
             {

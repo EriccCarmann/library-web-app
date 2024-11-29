@@ -1,19 +1,21 @@
-﻿using Library.Domain.Interfaces;
+﻿using Library.Domain.Entities;
+using Library.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Library.Application.UseCases.AccountUseCases
 {
     public class LogoutUseCase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly SignInManager<LibraryUser> _signInManager;
 
-        public LogoutUseCase(IUnitOfWork unitOfWork)
+        public LogoutUseCase(SignInManager<LibraryUser> signInManager)
         {
-            _unitOfWork = unitOfWork;
+            _signInManager = signInManager;
         }
 
         public async Task Logout()
         {
-            await _unitOfWork.Account.Logout();
+            await _signInManager.SignOutAsync();
         }
     }
 }

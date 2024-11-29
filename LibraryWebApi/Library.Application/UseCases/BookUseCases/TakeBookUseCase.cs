@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 
 namespace Library.Application.UseCases.BookUseCases
@@ -19,17 +19,24 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<Book> TakeBook(string bookTitle, string userId)
         {
-            var takeBook = await _unitOfWork.Book.TakeBook(bookTitle, userId);
-
-            if (takeBook == null)
+            if (userId == null)
             {
-                throw new EntityNotFoundException($"Book name {bookTitle} was not found");
+                throw new EntityNotFoundException($"User was not found");
             }
 
-            if (takeBook.IsTaken == true)
+            var existingBook = await _unitOfWork.Book.GetByTitle(bookTitle);
+
+            if (existingBook is null)
+            {
+                throw new EntityNotFoundException($"{bookTitle} is not found in database.");
+            }
+
+            if (existingBook.IsTaken == true)
             {
                 throw new BookTakenException($"Book {bookTitle} was already taken");
             }
+
+            var takeBook = await _unitOfWork.Book.TakeBook(existingBook, userId);
 
             await _unitOfWork.SaveChangesAsync();
 

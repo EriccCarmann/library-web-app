@@ -2,9 +2,10 @@
 using Library.Application.DTOs.BookDTOs;
 using Library.Application.Validators;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Library.Application.UseCases.BookUseCases
 {
@@ -25,6 +26,13 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<BookReadDto> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDto bookUpdatingDto)
         {
+            var existingBook = await _unitOfWork.Book.GetByIdAsync(id);
+
+            if (existingBook is null)
+            {
+                throw new EntityNotFoundException($"{existingBook} is not found in database.");
+            }
+
             Book newBook = new Book
             {
                 Id = id,

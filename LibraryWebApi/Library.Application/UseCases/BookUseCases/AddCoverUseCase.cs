@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Helpers;
 using Library.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -34,12 +34,14 @@ namespace Library.Application.UseCases.BookUseCases
                 await stream.ReadAsync(imageData, 0, imageData.Length);
             }
 
-            var result = await _unitOfWork.Book.AddCover(bookTitle, imageData);
+            var book = await _unitOfWork.Book.GetByTitle(bookTitle);
 
-            if (result == null)
+            if (book == null)
             {
                 throw new EntityNotFoundException($"Book name {bookTitle} was not found");
             }
+
+            _unitOfWork.Book.AddCover(book, imageData);
 
             await _unitOfWork.SaveChangesAsync();
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Library.Domain.Entities;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 namespace Library.Application.UseCases.BookUseCases
 {
@@ -18,7 +18,7 @@ namespace Library.Application.UseCases.BookUseCases
 
         public async Task<Book> GetByISBN(string ISBN)
         {
-            var book = await _unitOfWork.Book.GetByIdISBN(ISBN);
+            var book = await _unitOfWork.Book.GetByISBN(ISBN);
 
             if (book == null)
             {

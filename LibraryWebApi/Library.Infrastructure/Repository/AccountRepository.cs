@@ -40,15 +40,17 @@ namespace Library.Infrastructure.Repository
 
         public async Task<SignInResult?> Login(string name, string password) 
         {
-            var result = await _signInManager.PasswordSignInAsync(name, password, false, false);
+            return await _signInManager.PasswordSignInAsync(name, password, false, false); ;
+        }
 
-            return result;
+        public async Task<bool> CheckPasswordAsync(LibraryUser user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
         }
 
         public async Task<Task> Logout()
         {
-            var result = _signInManager.SignOutAsync();
-            return result;
+            return _signInManager.SignOutAsync();
         }
     }
 }

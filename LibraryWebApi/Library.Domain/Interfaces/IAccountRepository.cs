@@ -8,7 +8,8 @@ namespace Library.Domain.Interfaces
         Task<LibraryUser?> FindUserByName(string name);
         Task<IdentityResult?> Register(LibraryUser libraryUser, string password);
         Task<IdentityResult?> AddUserClaim(LibraryUser libraryUser);
-        Task<SignInResult?> Login(string name, string password);      
+        Task<SignInResult?> Login(string name, string password);
+        Task<bool> CheckPasswordAsync(LibraryUser user, string password);
         Task<Task> Logout();
     }
 }

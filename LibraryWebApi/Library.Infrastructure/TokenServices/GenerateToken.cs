@@ -29,6 +29,7 @@ namespace Library.Infrastructure.TokenServices
 
             List<Claim> claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, libraryUser.Id),
                 new Claim(ClaimTypes.Name, libraryUser.UserName),
                 new Claim(ClaimTypes.Role, role)
             };
@@ -40,7 +41,7 @@ namespace Library.Infrastructure.TokenServices
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddSeconds(30),
                 signingCredentials: credentials);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

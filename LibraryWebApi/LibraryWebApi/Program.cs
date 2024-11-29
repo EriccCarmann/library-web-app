@@ -8,11 +8,9 @@ using System.Security.Claims;
 using FluentValidation;
 using Library.Infrastructure.UnitOfWork;
 using LibraryWebApi.ExceptionHandlerMiddleware;
-using LibraryWebApi.Services;
 using Library.Application.Profiles.BookProfiles;
 using Library.Application.Profiles.AuthorProfiles;
 using Library.Application.Validators;
-using Library.Application.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -53,12 +51,6 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<LibraryUserValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthorValidator>();
-#endregion
-
-#region Services
-builder.Services.AddScoped<BookService>();
-builder.Services.AddScoped<AuthorService>();
-builder.Services.AddScoped<AccountService>();
 #endregion
 
 #region UseCases
@@ -110,6 +102,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<DBConfig>();
 
 builder.Services.AddIdentity<LibraryUser, IdentityRole>(options =>
 {

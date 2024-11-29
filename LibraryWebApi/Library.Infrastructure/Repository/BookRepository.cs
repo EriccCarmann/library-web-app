@@ -15,17 +15,18 @@ namespace Library.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Book?> GetByIdISBN(string ISBN)
+        public async Task<Book?> GetByISBN(string ISBN)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
-
-            return book;
+            return await _context.Book.FirstOrDefaultAsync(x => x.ISBN == ISBN);
         }
 
-        public async Task<Book?> TakeBook(string bookTitle, string userId)
+        public async Task<Book?> GetByTitle(string title)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(x => x.Title.ToLower() == bookTitle.ToLower());
+            return await _context.Book.FirstOrDefaultAsync(x => x.Title == title);
+        }
 
+        public async Task<Book?> TakeBook(Book book, string userId)
+        {
             book.IsTaken = true;
             book.UserId = userId;
             book.TakeDateTime = DateTime.UtcNow;
@@ -41,10 +42,8 @@ namespace Library.Infrastructure.Repository
             return await _context.Book.Where(b => b.UserId == userId).Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
-        public async Task<Book?> ReturnBook(string bookTitle, string userId)
+        public async Task<Book?> ReturnBook(Book book, string userId)
         {
-            var book = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle && b.UserId == userId);
-
             book.IsTaken = false;
             book.UserId = null;
             book.TakeDateTime = null;
@@ -53,15 +52,11 @@ namespace Library.Infrastructure.Repository
             return book;
         }
 
-        public async Task<Book?> AddCover(string bookTitle, byte[] file)
+        public Book AddCover(Book book, byte[] file)
         {
-            var existingBook = await _context.Book.FirstOrDefaultAsync(b => b.Title == bookTitle);
+            book.Cover = file;
 
-            if (existingBook == null) return null;
-
-            existingBook.Cover = file;
-
-            return existingBook;
+            return book;
         }
     }
 }

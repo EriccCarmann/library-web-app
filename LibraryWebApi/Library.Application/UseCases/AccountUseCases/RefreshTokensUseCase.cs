@@ -1,5 +1,5 @@
 ﻿using Library.Application.DTOs.LibraryUserDTOs;
-using Library.Domain.Exceptions;
+using Library.Application.Exceptions;
 using Library.Domain.Interfaces;
 
 namespace Library.Application.UseCases.AccountUseCases
@@ -23,19 +23,18 @@ namespace Library.Application.UseCases.AccountUseCases
         public async Task<ShowLoggedInUserDto> RefreshTokens(LoginDto loginDto)
         {
             var user = _unitOfWork.Account.FindUserByName(loginDto.UserName).Result;
-            var refreshToken = user.RefreshToken;
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User {loginDto.UserName} is not found in database.");
+            }
 
             if (user.TokenExpires < DateTime.Now)
             {
-                throw new EntityNotFoundException($"Token expired");
+                throw new TokenExpiredException("Token is expired");
             }
 
             var token = _generateToken.CreateToken(user);
-
-            var newRefreshToken = _generateRefreshToken.CreateRefreshToken();
-
-            user.RefreshToken = newRefreshToken.Token;
-            user.TokenExpires = newRefreshToken.Expires;
 
             _unitOfWork.SaveChangesAsync();
 
@@ -44,7 +43,7 @@ namespace Library.Application.UseCases.AccountUseCases
                 UserName = user.UserName,
                 Email = user.Email,
                 Token = token.Result,
-                RefreshToken = newRefreshToken.Token
+                RefreshToken = user.RefreshToken
             };
         }
     }

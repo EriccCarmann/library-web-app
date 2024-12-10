@@ -3,6 +3,8 @@ using Library.Application.DTOs.LibraryUserDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Library.Application.UseCases.AccountUseCases;
+using System.Text;
+using Microsoft.Extensions.Primitives;
 
 namespace LibraryWebApi.Controllers
 {
